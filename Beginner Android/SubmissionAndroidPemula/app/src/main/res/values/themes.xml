@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SubmissionAndroidPemula" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your Material 3 theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryContainer">@color/char_color</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowMenuStyle</item>
+
+        <!-- Customize status and navigation bar colors for Material 3 -->
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/char_color</item>
+    </style>
+
+    <!-- Custom style for overflow menu button (3 dots) using AppCompat -->
+    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <!-- Inherit the base theme for your app -->
+    <style name="Theme.SubmissionAndroidPemula" parent="Base.Theme.SubmissionAndroidPemula" />
+</resources>

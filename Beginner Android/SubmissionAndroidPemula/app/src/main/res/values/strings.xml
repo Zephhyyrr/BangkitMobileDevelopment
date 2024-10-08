@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">Karakter Genshin Impact</string>
+
+    <string name="character_name">Nama Karakter</string>
+    <string name="description">Deskripsi</string>
+    <string name="list">List</string>
+    <string name="grid">Grid</string>
+    <string name="character_name_detail">Character Name</string>
+    <string name="character_description_detail">Character Description</string>
+    <string name="share">Share</string>
+    <string name="about">About</string>
+    <string name="user_name">Firman Ardiansyah</string>
+    <string name="my_email">ardiansyahfirman2004@gmail.com</string>
+    <string name="Sahabat">Sahabat</string>
+    <string name="element">Element :</string>
+    <string name="nama_element">Nama Element</string>
+    <string-array name="data_name">
+        <item>Raiden Shogun</item>
+        <item>Zhongli</item>
+        <item>Nahida</item>
+        <item>Kazuha</item>
+        <item>Lynette</item>
+        <item>Yanfei</item>
+        <item>Furina</item>
+        <item>Venti</item>
+        <item>Sangonomiya Kokomi</item>k
+        <item>Kamisato Ayaka</item>
+    </string-array>
+    <string-array name="data_description">
+        <item>Karakter Raiden Shogun merupakan salah satu karakter Archon yang menguasai Inazuma, sebuah wilayah di dunia Genshin Impact. Karakter Raiden Shogun digambarkan sebagai wanita cantik dan anggun dengan penampilan menarik, namun juga sebagai panglima perang dengan pangkat tertinggi. </item>
+        <item>Zhongli ( Hanzi :钟离; Pinyin : Zhōnglí ) adalah karakter yang dapat dimainkan dalam permainan peran aksi Genshin Impact . Ia diisi suaranya oleh Keith Silverstein dalam bahasa Inggris, Peng Bo dalam bahasa Mandarin, Tomoaki Maeno dalam bahasa Jepang, dan Pyo Yeong-jae dalam bahasa Korea.</item>
+        <item>Nahida adalah karakter Dendro yang bisa dimainkan di Genshin Impact. Ia adalah Lesser Lord Kusanali (God of Flower atau Dewa Bunga) dari Sumeru. Pada usia muda, ia terpilih sebagai sebagai Archon yang memimpin Sumeru. Nahida tinggal di Sanctuary of Surasthana, dan ia belajar setiap saat untuk mendapat pengetahuan baru.</item>
+        <item>Kaedehara Kazuha ( Jepang :楓原万葉Kaedehara Kazuha ) adalah karakter Anemo yang dapat dimainkan di Genshin Impact . Seorang samurai pengembara dari Klan Kaedehara yang dulu terkenal dengan kemampuan membaca suara alam, Kazuha adalah anggota kru sementara The Crux .</item>
+        <item>Lynette adalah karakter Anemo beraliran Ousia yang dapat dimainkan di Genshin Impact . Pendiam dan pendiam, Lynette bekerja sebagai asisten pesulap untuk saudaranya Lyney .</item>
+        <item>Yanfei adalah seorang konsultan hukum yang mempertimbangkan baik akal sehat maupun kemanusiaan di dalam pekerjaannya. Gadis tulus dengan separuh darah Adeptus ini mendambakan hidup yang bahagia, tapi bukan bahagia yang berlebihan.</item>
+        <item>Furina de Fontaine ( Hanzi :芙宁娜; Pinyin : Fúníngnà ) adalah karakter dari Genshin Impact , gim gacha aksi bermain peran tahun 2020 yang dikembangkan oleh miHoYo .</item>
+        <item>Venti adalah karakter Anemo yang dapat dimainkan di Genshin Impact . Ia adalah seorang penyair Mondstadt yang berjiwa bebas dan pecinta anggur, yang menyembunyikan identitasnya sebagai Barbatos , Archon Anemo.</item>
+        <item>Sangonomiya Kokomi adalah karakter bintang 5 dalam permainan Genshin Impact. Ia merupakan ahli strategi dari Pasukan Watatsumi dan pengguna Hydro Catalyst Bintang 5 yang sangat terampil.</item>
+        <item>Kamisato Ayaka ( Jepang :神里綾華Kamisato Ayaka ) adalah karakter Cryo yang dapat dimainkan di Genshin Impact . Dia bertanggung jawab atas urusan internal dan eksternal Klan Kamisato dan merupakan adik perempuan Kamisato Ayato .</item>
+    </string-array>
+    <string-array name="data_element">
+        <item>Electro</item>
+        <item>Geo</item>
+        <item>Dendro</item>
+        <item>Anemo</item>
+        <item>Anemo</item>
+        <item>Pyro</item>
+        <item>Hydro</item>
+        <item>Anemo</item>
+        <item>Hydro</item>k
+        <item>Cryo</item>
+    </string-array>
+    <integer-array name="data_photo">
+        <item>@drawable/raiden_shogun</item>
+        <item>@drawable/zhongli</item>
+        <item>@drawable/nahida</item>
+        <item>@drawable/kazuha</item>
+        <item>@drawable/lynet</item>
+        <item>@drawable/yanfei</item>
+        <item>@drawable/furina</item>
+        <item>@drawable/venti</item>
+        <item>@drawable/kokomi</item>
+        <item>@drawable/ayaka</item>
+    </integer-array>
+
+    <integer-array name="data_background">
+        <item>@drawable/b_raiden</item>
+        <item>@drawable/b_zhongli</item>
+        <item>@drawable/b_nahida</item>
+        <item>@drawable/b_kazuha</item>
+        <item>@drawable/b_lynette</item>
+        <item>@drawable/b_yanfei</item>
+        <item>@drawable/b_furina</item>
+        <item>@drawable/b_venti</item>
+        <item>@drawable/b_kokomi</item>
+        <item>@drawable/b_ayaka</item>
+    </integer-array>
+</resources>
