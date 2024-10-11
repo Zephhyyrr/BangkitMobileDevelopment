@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.2"
+androidAsyncHttp = "1.4.11"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -11,6 +12,7 @@ activity = "1.9.2"
 constraintlayout = "2.1.4"
 
 [libraries]
+android-async-http = { module = "com.loopj.android:android-async-http", version.ref = "androidAsyncHttp" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
