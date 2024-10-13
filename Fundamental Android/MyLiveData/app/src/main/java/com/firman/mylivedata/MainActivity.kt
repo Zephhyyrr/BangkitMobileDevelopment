@@ -23,12 +23,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(activityMainBinding.root)
 
         liveDataTimerViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        subscribe()
     }
     private fun subscribe(){
-        val elapseTimeObserver = Observer<Long?> { along ->
+        val elapsedTimeObserver = Observer<Long?> { along ->
             val newText = this@MainActivity.resources.getString(R.string.seconds, along)
             activityMainBinding.timerTextview.text = newText
         }
-        liveDataTimerViewModel.getElapsedTime().observe(this, elapseTimeObserver)
+        liveDataTimerViewModel.getElapsedTime().observe(this, elapsedTimeObserver)
     }
 }
