@@ -4,8 +4,6 @@ package com.firman.restaurantreview.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -14,12 +12,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.firman.restaurantreview.data.response.*
-import com.firman.restaurantreview.data.retrofit.ApiConfig
 import com.firman.restaurantreview.databinding.ActivityMainBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
+import com.google.android.material.snackbar.Snackbar
+import com.firman.restaurantreview.utils.Event
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -54,6 +49,15 @@ class MainActivity : AppCompatActivity() {
             showLoading(it)
         }
 
+        mainViewModel.snackbarText.observe(this) {
+            it.getContentIfNotHandled()?.let { snackBarText ->
+                Snackbar.make(
+                    window.decorView.rootView,
+                    snackBarText,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
         binding.btnSend.setOnClickListener { view->
             mainViewModel.postReview(binding.edReview.text.toString())
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
