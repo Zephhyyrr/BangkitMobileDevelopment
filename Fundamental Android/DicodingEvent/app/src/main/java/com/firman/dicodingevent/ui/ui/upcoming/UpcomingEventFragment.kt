@@ -4,19 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firman.dicodingevent.databinding.FragmentUpcomingEventBinding
 import com.firman.dicodingevent.ui.EventAdapter
-import com.firman.dicodingevent.ui.MainViewModel
 
 class UpcomingEventFragment : Fragment() {
 
     private var _binding: FragmentUpcomingEventBinding? = null
     private val binding get() = _binding!!
-    private val mainViewModel by viewModels<MainViewModel>()
+    private val upcomingEventViewModel by viewModels<UpcomingEventViewModel>()
     private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(
@@ -33,7 +35,25 @@ class UpcomingEventFragment : Fragment() {
 
         setupRecyclerView()
         observeViewModel()
+
+        requireActivity().window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                )
     }
+
+    private fun handleWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemWindowInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            view.updatePadding(
+                top = 0
+            )
+            insets
+        }
+    }
+
+
 
     private fun setupRecyclerView() {
         eventAdapter = EventAdapter { event ->
@@ -46,10 +66,10 @@ class UpcomingEventFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        mainViewModel.activeEvent.observe(viewLifecycleOwner) { eventList ->
+        upcomingEventViewModel.activeEvent.observe(viewLifecycleOwner) { eventList ->
             eventAdapter.submitList(eventList)
         }
-        mainViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        upcomingEventViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             showLoading(isLoading)
         }
     }

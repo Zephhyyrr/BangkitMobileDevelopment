@@ -9,9 +9,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main) // Pastikan Anda memiliki layout XML ini
+        setContentView(R.layout.activity_main)
 
-        // Menampilkan DashboardFragment di MainActivity
+        // Memastikan fragment hanya ditambahkan sekali
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, UpcomingEventFragment())
