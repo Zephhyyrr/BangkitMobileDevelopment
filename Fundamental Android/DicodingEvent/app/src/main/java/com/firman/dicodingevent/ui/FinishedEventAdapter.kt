@@ -1,5 +1,6 @@
 package com.firman.dicodingevent.ui
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firman.dicodingevent.data.response.ListEventsItem
 import com.firman.dicodingevent.databinding.ItemFinishedEventBinding
+import com.firman.dicodingevent.ui.ui.detail.DetailActivity
 
 class FinishedEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
     ListAdapter<ListEventsItem, FinishedEventAdapter.EventViewHolder>(EventDiffCallback()) {
@@ -36,7 +38,9 @@ class FinishedEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
                 .into(binding.ivActivePicture)
 
             binding.btnSelengkapnya.setOnClickListener {
-                onItemClick(event)
+                val intent = Intent(binding.root.context, DetailActivity::class.java)
+                intent.putExtra("EVENT_ID", event.id.toString())
+                binding.root.context.startActivity(intent)
             }
         }
     }

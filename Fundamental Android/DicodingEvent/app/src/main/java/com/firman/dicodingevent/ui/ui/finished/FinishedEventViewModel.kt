@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.firman.dicodingevent.data.response.DicodingResponse
 import com.firman.dicodingevent.data.response.ListEventsItem
 import com.firman.dicodingevent.data.retrofit.ApiConfig
+import com.firman.dicodingevent.ui.ui.upcoming.UpcomingEventViewModel
+import com.firman.dicodingevent.ui.ui.upcoming.UpcomingEventViewModel.Companion
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,6 +27,55 @@ class FinishedEventViewModel : ViewModel() {
 
     init {
         findFinishedEvent()
+    }
+
+    fun searchEvents(keyword: String) {
+        _isLoading.value = true
+
+        val activeCode = if (keyword.isBlank()) 0 else -1
+
+        val client = ApiConfig.getApiService().searchEvents(activeCode, keyword)
+        client.enqueue(object : Callback<DicodingResponse> {
+            override fun onResponse(
+                call: Call<DicodingResponse>,
+                response: Response<DicodingResponse>
+            ) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val allEvents = response.body()?.listEvents ?: emptyList()
+
+                    if (keyword.isBlank()) {
+                        _finishedEvent.postValue(allEvents)
+                    } else {
+                        val filteredEvents = allEvents.filter { event ->
+                            event.name.contains(keyword, ignoreCase = true) ||
+                                    event.description.contains(keyword, ignoreCase = true)
+                        }
+
+                        if (filteredEvents.isEmpty()) {
+                            _finishedEvent.postValue(allEvents)
+                        } else {
+                            _finishedEvent.postValue(filteredEvents)
+                        }
+                    }
+                } else {
+                    Log.e(
+                        FinishedEventViewModel.TAG,
+                        "Error: ${response.message()}"
+                    )
+                    _finishedEvent.postValue(emptyList())
+                }
+            }
+
+            override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
+                _isLoading.value = false
+                Log.e(
+                    FinishedEventViewModel.TAG,
+                    "Failure: ${t.message}"
+                )
+                _finishedEvent.postValue(emptyList())
+            }
+        })
     }
 
     private fun findFinishedEvent() {

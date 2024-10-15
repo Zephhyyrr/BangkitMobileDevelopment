@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -27,12 +28,34 @@ class UpcomingEventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUpcomingEventBinding.inflate(inflater, container, false)
+
+        upcomingEventViewModel.searchEvents(keyword = "")
+
+        with(binding) {
+            searchView.setupWithSearchBar(searchBar)
+            searchView.editText.setOnEditorActionListener { textView, actionId, event ->
+                val keyword = searchView.text.toString()
+                if (keyword.isNotBlank()) {
+                    upcomingEventViewModel.searchEvents(keyword)
+                } else {
+                    upcomingEventViewModel.searchEvents(keyword = "")
+                }
+
+                searchBar.setText(searchView.text)
+                searchView.hide()
+
+                Toast.makeText(requireContext(), "Searching for: $keyword", Toast.LENGTH_SHORT).show()
+                false
+            }
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        handleWindowInsets()
         setupRecyclerView()
         observeViewModel()
 
@@ -52,8 +75,6 @@ class UpcomingEventFragment : Fragment() {
             insets
         }
     }
-
-
 
     private fun setupRecyclerView() {
         eventAdapter = EventAdapter { event ->

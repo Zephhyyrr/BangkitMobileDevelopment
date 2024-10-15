@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".ui.ui.detail.DetailActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -101,7 +114,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvTitleDeskripsi" />
 
             <TextView
-                android:id="@+id/tvTitleAcara"
+                android:id="@+id/tvTitleEvent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -121,7 +134,7 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleAcara" />
+                app:layout_constraintTop_toBottomOf="@id/tvTitleEvent" />
 
             <TextView
                 android:id="@+id/tvTitleKouta"

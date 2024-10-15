@@ -12,45 +12,58 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DetailViewModel : ViewModel() {
+    private val _eventDetail = MutableLiveData<ListEventsItem?>()
+    val eventDetail: LiveData<ListEventsItem?> get() = _eventDetail
 
-    private val _eventDetail = MutableLiveData<ListEventsItem?>() // Menyimpan detail event
-    val eventDetail: LiveData<ListEventsItem?> = _eventDetail // LiveData untuk observasi detail event
-
-    private val _isLoading = MutableLiveData<Boolean>() // Menyimpan status loading
-    val isLoading: LiveData<Boolean> = _isLoading
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     companion object {
-        private const val TAG = "DetailViewModel"
+        private const val TAG = "DataViewModel"
     }
 
     fun fetchEventDetail(eventId: String) {
         _isLoading.value = true
+        ApiConfig.getApiService().getDetailEvent(eventId)
+            .enqueue(object : Callback<DicodingResponse> {
+                override fun onResponse(
+                    call: Call<DicodingResponse>,
+                    response: Response<DicodingResponse>
+                ) {
+                    _isLoading.value = false
+                    if (response.isSuccessful) {
+                        val eventResponse = response.body()
+                        if (eventResponse != null) {
+                            Log.d(TAG, "Response: $eventResponse")
 
-        val client = ApiConfig.getApiService().getDetailEvent(eventId) // Mengambil detail event dari API
-        client.enqueue(object : Callback<DicodingResponse> {
-            override fun onResponse(
-                call: Call<DicodingResponse>,
-                response: Response<DicodingResponse>
-            ) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    val eventDetailList = response.body()?.listEvents
-                    if (!eventDetailList.isNullOrEmpty()) {
-                        _eventDetail.value = eventDetailList[0] // Set eventDetail dengan item pertama dari list
+                            if (eventResponse.error) {
+                                Log.e(TAG, "Error from API: ${eventResponse.message}")
+                                _eventDetail.value = null
+                                return
+                            }
+                            val event = eventResponse.event
+                            if (event != null) {
+                                Log.d(TAG, "Event found: ${event.name}")
+                                _eventDetail.value = event
+                            } else {
+                                Log.e(TAG, "Event is null")
+                                _eventDetail.value = null
+                            }
+                        } else {
+                            Log.e(TAG, "Response body is null")
+                            _eventDetail.value = null
+                        }
                     } else {
-                        Log.e(TAG, "Event detail is null or empty")
+                        Log.e(TAG, "Error: ${response.errorBody()?.string()}")
+                        _eventDetail.value = null
                     }
-                } else {
-                    Log.e(TAG, "Error: ${response.message()}")
                 }
-            }
 
-            override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(TAG, "Failure: ${t.message}")
-            }
-        })
+                override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
+                    _isLoading.value = false
+                    Log.e(TAG, "Failure: ${t.message}")
+                    _eventDetail.value = null
+                }
+            })
     }
 }
-
-

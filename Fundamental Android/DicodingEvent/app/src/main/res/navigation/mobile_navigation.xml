@@ -3,23 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.firman.dicodingevent.ui.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_finished"
+            app:destination="@id/navigation_finished" /> <!-- Pastikan ini sesuai -->
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_upcoming"
         android:name="com.firman.dicodingevent.ui.ui.upcoming.UpcomingEventFragment"
         android:label="@string/title_upcoming"
         tools:layout="@layout/fragment_upcoming_event" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_finished"
         android:name="com.firman.dicodingevent.ui.ui.finished.FinishedEventFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/finished_event"
         tools:layout="@layout/fragment_finished_event" />
 </navigation>

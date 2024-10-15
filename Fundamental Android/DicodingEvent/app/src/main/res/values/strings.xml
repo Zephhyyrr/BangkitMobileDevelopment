@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DicodingEvent</string>
+    <string name="app_name">Dicoding Event</string>
     <string name="judul_event">Judul Event</string>
     <string name="deskripsi_event">Deskripsi Event</string>
     <string name="selengkapnya">Selengkapnya</string>
@@ -22,4 +22,5 @@
     <string name="ini_jumlah_kouta">Ini Jumlah Kouta</string>
     <string name="title_kota">Kota :</string>
     <string name="ini_kota">Ini Kota</string>
+    <string name="searchbar_hint">Cari Disini\n</string>
 </resources>

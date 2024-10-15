@@ -38,7 +38,6 @@ class EventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
                 intent.putExtra("EVENT_ID", event.id.toString())
                 binding.root.context.startActivity(intent)
             }
-
         }
     }
 

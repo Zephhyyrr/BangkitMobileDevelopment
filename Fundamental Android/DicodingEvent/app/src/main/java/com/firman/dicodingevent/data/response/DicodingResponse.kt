@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class DicodingResponse(
 
+	@field:SerializedName("event")
+	val event: ListEventsItem?,
+
 	@field:SerializedName("listEvents")
 //	val listEvents: List<ListEventsItem>,
 	val listEvents: List<ListEventsItem> = listOf(),
@@ -56,5 +59,8 @@ data class ListEventsItem(
 	val endTime: String,
 
 	@field:SerializedName("category")
-	val category: String
+	val category: String,
+
+	var isFinished: Boolean = false,
+	val active: Int
 )

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -12,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.firman.dicodingevent.databinding.FragmentFinishedEventBinding
+import com.firman.dicodingevent.databinding.FragmentUpcomingEventBinding
 import com.firman.dicodingevent.ui.FinishedEventAdapter
 
 class FinishedEventFragment : Fragment() {
@@ -28,6 +30,27 @@ class FinishedEventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFinishedEventBinding.inflate(inflater, container, false)
+
+        finishedEventViewModel.searchEvents(keyword = "")
+
+        with(binding) {
+            searchView.setupWithSearchBar(searchBar)
+            searchView.editText.setOnEditorActionListener { textView, actionId, event ->
+                val keyword = searchView.text.toString()
+                if (keyword.isNotBlank()) {
+                    finishedEventViewModel.searchEvents(keyword)
+                } else {
+                    finishedEventViewModel.searchEvents(keyword = "")
+                }
+
+                searchBar.setText(searchView.text)
+                searchView.hide()
+
+                Toast.makeText(requireContext(), "Searching for: $keyword", Toast.LENGTH_SHORT).show()
+                false
+            }
+        }
+
         return binding.root
     }
 
@@ -58,14 +81,13 @@ class FinishedEventFragment : Fragment() {
 
     private fun setupRecyclerView() {
         eventAdapter = FinishedEventAdapter { event ->
-
+        }
             binding.rvActive.layoutManager = GridLayoutManager(requireContext(), 2)
             binding.rvActive.adapter = eventAdapter
 
             val itemDecoration =
                 DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             binding.rvActive.addItemDecoration(itemDecoration)
-        }
     }
 
     private fun observeViewModel() {
