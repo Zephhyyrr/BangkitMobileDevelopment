@@ -15,6 +15,7 @@
 
         <ImageView
             android:id="@+id/img_item_photo"
+            android:contentDescription="TODO"
             tools:src="@tools:sample/avatars"
             android:layout_width="70dp"
             android:layout_height="100dp"

@@ -13,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.firman.dicodingevent.databinding.FragmentFinishedEventBinding
-import com.firman.dicodingevent.databinding.FragmentUpcomingEventBinding
 import com.firman.dicodingevent.ui.FinishedEventAdapter
 
 class FinishedEventFragment : Fragment() {

@@ -7,8 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.firman.dicodingevent.data.response.DicodingResponse
 import com.firman.dicodingevent.data.response.ListEventsItem
 import com.firman.dicodingevent.data.retrofit.ApiConfig
-import com.firman.dicodingevent.ui.ui.upcoming.UpcomingEventViewModel
-import com.firman.dicodingevent.ui.ui.upcoming.UpcomingEventViewModel.Companion
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,7 +24,9 @@ class FinishedEventViewModel : ViewModel() {
     }
 
     init {
-        findFinishedEvent()
+        if (_finishedEvent.value == null) {
+            findFinishedEvent()
+        }
     }
 
     fun searchEvents(keyword: String) {
@@ -44,36 +44,25 @@ class FinishedEventViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val allEvents = response.body()?.listEvents ?: emptyList()
 
-                    if (keyword.isBlank()) {
-                        _finishedEvent.postValue(allEvents)
+                    val filteredEvents = if (keyword.isBlank()) {
+                        allEvents
                     } else {
-                        val filteredEvents = allEvents.filter { event ->
+                        allEvents.filter { event ->
                             event.name.contains(keyword, ignoreCase = true) ||
                                     event.description.contains(keyword, ignoreCase = true)
                         }
-
-                        if (filteredEvents.isEmpty()) {
-                            _finishedEvent.postValue(allEvents)
-                        } else {
-                            _finishedEvent.postValue(filteredEvents)
-                        }
                     }
+
+                    _finishedEvent.postValue(filteredEvents.ifEmpty { allEvents })
                 } else {
-                    Log.e(
-                        FinishedEventViewModel.TAG,
-                        "Error: ${response.message()}"
-                    )
                     _finishedEvent.postValue(emptyList())
                 }
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(
-                    FinishedEventViewModel.TAG,
-                    "Failure: ${t.message}"
-                )
                 _finishedEvent.postValue(emptyList())
+                Log.e(TAG, "Failed to fetch events: ${t.message}")
             }
         })
     }
@@ -92,13 +81,13 @@ class FinishedEventViewModel : ViewModel() {
                     val finishedEvents = response.body()?.listEvents ?: emptyList()
                     _finishedEvent.value = finishedEvents
                 } else {
-                    Log.e(TAG, "Error: ${response.message()}")
+                    _finishedEvent.value = emptyList()
                 }
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "Failure: ${t.message}")
+                _finishedEvent.value = emptyList()
             }
         })
     }

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firman.dicodingevent.data.response.ListEventsItem
 import com.firman.dicodingevent.databinding.ItemHomeEventBinding
-import com.firman.dicodingevent.databinding.ItemHomeEventFinishedBinding
 import com.firman.dicodingevent.ui.ui.detail.DetailActivity
 
 class HomeEventUpcomingAdapter(

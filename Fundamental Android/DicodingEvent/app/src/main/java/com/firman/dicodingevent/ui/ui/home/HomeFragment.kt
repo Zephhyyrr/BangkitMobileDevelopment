@@ -1,7 +1,6 @@
 package com.firman.dicodingevent.ui.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,6 @@ import com.firman.dicodingevent.R
 import com.firman.dicodingevent.databinding.FragmentHomeBinding
 import com.firman.dicodingevent.ui.HomeEventFinishedAdapter
 import com.firman.dicodingevent.ui.HomeEventUpcomingAdapter
-import com.firman.dicodingevent.ui.ui.finished.FinishedEventFragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 
 class HomeFragment : Fragment() {
@@ -43,8 +39,7 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchEvents()
 
         binding.btnSelengkapnya.setOnClickListener {
-            Log.d("HomeFragment", "btnSelengkapnya clicked")
-            findNavController().navigate(R.id.navigation_finished)
+            findNavController().navigate(R.id.action_navigation_home_to_navigation_finished)
         }
 
         return binding.root
@@ -65,22 +60,21 @@ class HomeFragment : Fragment() {
     private fun observeEvents() {
         homeViewModel.upcomingEvents.observe(viewLifecycleOwner) { events ->
             upcomingEventAdapter.updateEvents(events)
-            if (events.isNullOrEmpty()) {
-                Log.d("HomeFragment", "No upcoming events received")
-            } else {
-                Log.d("HomeFragment", "Upcoming events received: ${events.size}")
-            }
         }
 
         homeViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
             finishedEventAdapter.updateEvents(events)
-            if (events.isNullOrEmpty()) {
-                Log.d("HomeFragment", "No finished events received")
+        }
+
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.progressBar.visibility = View.VISIBLE
             } else {
-                Log.d("HomeFragment", "Finished events received: ${events.size}")
+                binding.progressBar.visibility = View.GONE
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -12,18 +12,48 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_navigation_home_to_navigation_finished"
-            app:destination="@id/navigation_finished" /> <!-- Pastikan ini sesuai -->
+            app:destination="@id/navigation_finished"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_upcoming"
+            app:destination="@id/navigation_upcoming"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_upcoming"
         android:name="com.firman.dicodingevent.ui.ui.upcoming.UpcomingEventFragment"
         android:label="@string/title_upcoming"
-        tools:layout="@layout/fragment_upcoming_event" />
+        tools:layout="@layout/fragment_upcoming_event" >
+        <action
+            android:id="@+id/action_navigation_upcoming_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true"  />
+        <action
+            android:id="@+id/action_navigation_upcoming_to_navigation_finished2"
+            app:destination="@id/navigation_finished"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_finished"
         android:name="com.firman.dicodingevent.ui.ui.finished.FinishedEventFragment"
         android:label="@string/finished_event"
-        tools:layout="@layout/fragment_finished_event" />
+        tools:layout="@layout/fragment_finished_event" >
+        <action
+            android:id="@+id/action_navigation_finished_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_finished_to_navigation_upcoming"
+            app:destination="@id/navigation_upcoming"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

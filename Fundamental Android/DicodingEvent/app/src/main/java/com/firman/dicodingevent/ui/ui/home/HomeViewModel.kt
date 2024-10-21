@@ -4,11 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.firman.dicodingevent.data.response.DicodingResponse
 import com.firman.dicodingevent.data.response.ListEventsItem
 import com.firman.dicodingevent.data.retrofit.ApiConfig
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,7 +38,8 @@ class HomeViewModel : ViewModel() {
     private fun fetchUpcomingEvents() {
         _isLoading.value = true
 
-        val client = ApiConfig.getApiService().getEvents(1) // Assuming 1 is the keyword for upcoming events
+        val client =
+            ApiConfig.getApiService().getEvents(1) // Assuming 1 is the keyword for upcoming events
         client.enqueue(object : Callback<DicodingResponse> {
             override fun onResponse(
                 call: Call<DicodingResponse>,

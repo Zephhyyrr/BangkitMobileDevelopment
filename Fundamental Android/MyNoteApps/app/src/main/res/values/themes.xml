@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyNoteApps" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here. -->
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="colorPrimary">@color/blue_700</item>
+        <item name="colorSurface">@color/blue_700</item>
+        <item name="colorPrimaryContainer">@color/blue_200</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="Theme.MyNoteApps" parent="Base.Theme.MyNoteApps" />
+</resources>

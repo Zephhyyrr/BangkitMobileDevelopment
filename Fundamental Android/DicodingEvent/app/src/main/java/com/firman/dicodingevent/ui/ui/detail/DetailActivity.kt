@@ -47,17 +47,14 @@ class DetailActivity : AppCompatActivity() {
     private fun observeEventDetail() {
         viewModel.eventDetail.observe(this) { event ->
             if (event != null) {
-                Log.d(TAG, "Event data received: $event")
                 updateUI(event)
-            } else {
-                Log.e(TAG, "Event not found")
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateUI(event: ListEventsItem) {
-        binding.tvEvent.text = event.name
+        binding.tvTitle.text = event.name
         binding.tvOrganizer.text = event.ownerName
         binding.tvDescription.text = HtmlCompat.fromHtml(event.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.tvCity.text = event.cityName

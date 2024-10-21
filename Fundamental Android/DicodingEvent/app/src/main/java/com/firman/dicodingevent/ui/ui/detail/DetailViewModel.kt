@@ -34,34 +34,27 @@ class DetailViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         val eventResponse = response.body()
                         if (eventResponse != null) {
-                            Log.d(TAG, "Response: $eventResponse")
 
                             if (eventResponse.error) {
-                                Log.e(TAG, "Error from API: ${eventResponse.message}")
                                 _eventDetail.value = null
                                 return
                             }
                             val event = eventResponse.event
                             if (event != null) {
-                                Log.d(TAG, "Event found: ${event.name}")
                                 _eventDetail.value = event
                             } else {
-                                Log.e(TAG, "Event is null")
                                 _eventDetail.value = null
                             }
                         } else {
-                            Log.e(TAG, "Response body is null")
                             _eventDetail.value = null
                         }
                     } else {
-                        Log.e(TAG, "Error: ${response.errorBody()?.string()}")
                         _eventDetail.value = null
                     }
                 }
 
                 override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
                     _isLoading.value = false
-                    Log.e(TAG, "Failure: ${t.message}")
                     _eventDetail.value = null
                 }
             })
