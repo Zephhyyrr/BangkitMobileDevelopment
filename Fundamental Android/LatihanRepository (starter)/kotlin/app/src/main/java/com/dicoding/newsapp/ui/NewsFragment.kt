@@ -45,11 +45,13 @@ class NewsFragment : Fragment() {
                         is Result.Loading -> {
                             binding?.progressBar?.visibility = View.VISIBLE
                         }
+
                         is Result.Success -> {
                             binding?.progressBar?.visibility = View.GONE
                             val newsData = result.data
                             newsAdapter.submitList(newsData)
                         }
+
                         is Result.Error -> {
                             binding?.progressBar?.visibility = View.GONE
                             Toast.makeText(

@@ -12,7 +12,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NewsRepository(
+
+class NewsRepository private constructor(
     private val apiService: ApiService,
     private val newsDao: NewsDao,
     private val appExecutors: AppExecutors
