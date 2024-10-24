@@ -28,7 +28,6 @@
                     android:id="@+id/ivActivePicture"
                     android:layout_width="match_parent"
                     android:layout_height="194dp"
-                    android:contentDescription="TODO"
                     android:scaleType="centerCrop"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
 

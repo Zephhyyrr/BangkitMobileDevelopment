@@ -19,6 +19,12 @@
             android:id="@+id/action_navigation_home_to_navigation_upcoming"
             app:destination="@id/navigation_upcoming"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_setting"
+            app:destination="@id/navigation_setting" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_favorite"
+            app:destination="@id/navigation_favorite" />
     </fragment>
 
     <fragment
@@ -37,6 +43,12 @@
             app:destination="@id/navigation_finished"
             app:launchSingleTop="true"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_upcoming_to_navigation_setting"
+            app:destination="@id/navigation_setting" />
+        <action
+            android:id="@+id/action_navigation_upcoming_to_navigation_favorite"
+            app:destination="@id/navigation_favorite" />
     </fragment>
 
     <fragment
@@ -55,5 +67,34 @@
             app:destination="@id/navigation_upcoming"
             app:launchSingleTop="true"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_finished_to_navigation_setting"
+            app:destination="@id/navigation_setting" />
+        <action
+            android:id="@+id/action_navigation_finished_to_navigation_favorite"
+            app:destination="@id/navigation_favorite" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.firman.dicodingevent.ui.ui.setting.SettingFragment"
+        android:label="@string/setting"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_navigation_setting_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_setting_to_navigation_finished"
+            app:destination="@id/navigation_finished" />
+        <action
+            android:id="@+id/action_navigation_setting_to_navigation_upcoming"
+            app:destination="@id/navigation_upcoming" />
+        <action
+            android:id="@+id/action_navigation_setting_to_navigation_favorite"
+            app:destination="@id/navigation_favorite" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.firman.dicodingevent.ui.ui.favorite.FavoriteFragment"
+        android:label="@string/favorite"
+        tools:layout="@layout/fragment_favorite"/>
 </navigation>

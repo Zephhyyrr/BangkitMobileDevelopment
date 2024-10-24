@@ -23,4 +23,12 @@
     <string name="title_kota">Kota :</string>
     <string name="ini_kota">Ini Kota</string>
     <string name="searchbar_hint">Cari Disini\n</string>
+    <string name="event_date_format">%1$s - %2$s %3$s : %4$s</string>
+    <string name="event_date_error">Invalid date format</string>
+    <string name="followers_count_format">%1$d Followers</string>
+    <string name="setting">Setting</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="ganti_mode_tema">Ganti mode tema</string>
+    <string name="favorite">Favorite</string>
+    <string name="finished">Finished</string>
 </resources>

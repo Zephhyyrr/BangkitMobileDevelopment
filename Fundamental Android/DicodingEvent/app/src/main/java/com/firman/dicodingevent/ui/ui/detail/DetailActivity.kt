@@ -1,6 +1,5 @@
 package com.firman.dicodingevent.ui.ui.detail
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.firman.dicodingevent.R
 import com.firman.dicodingevent.data.response.ListEventsItem
 import com.firman.dicodingevent.databinding.ActivityDetailBinding
 import java.util.Locale
@@ -36,23 +36,21 @@ class DetailActivity : AppCompatActivity() {
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-        if (eventId != null) {
-            viewModel.fetchEventDetail(eventId)
-            observeEventDetail()
-        } else {
-            Log.e(TAG, "EVENT_ID is null")
-        }
-    }
-
-    private fun observeEventDetail() {
         viewModel.eventDetail.observe(this) { event ->
             if (event != null) {
                 updateUI(event)
+            } else {
+                Log.e(TAG, "Event detail is null")
             }
+        }
+
+        if (eventId != null && viewModel.eventDetail.value == null) {
+            viewModel.fetchEventDetail(eventId)
+        } else {
+            Log.e(TAG, "EVENT_ID is null or event detail already loaded")
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun updateUI(event: ListEventsItem) {
         binding.tvTitle.text = event.name
         binding.tvOrganizer.text = event.ownerName
@@ -67,6 +65,7 @@ class DetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
         Glide.with(this).load(event.mediaCover).into(binding.ivDetail)
+
         // Setup tanggal
         try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) // format input dari API
@@ -81,9 +80,9 @@ class DetailActivity : AppCompatActivity() {
             val yearFormatted = outputYearFormat.format(endDate)
             val timeFormatted = outputTimeFormat.format(startDate)
 
-            binding.tvEvent.text = "$startFormatted - $endFormatted $yearFormatted : $timeFormatted"
+            binding.tvEvent.text = getString(R.string.event_date_format, startFormatted, endFormatted, yearFormatted, timeFormatted)
         } catch (e: Exception) {
-            binding.tvEvent.text = "${event.beginTime} sampai ${event.endTime}"
+            binding.tvEvent.text = getString(R.string.event_date_error)
         }
     }
 }

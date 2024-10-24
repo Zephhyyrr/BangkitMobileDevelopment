@@ -36,21 +36,13 @@ class FinishedEventViewModel : ViewModel() {
 
         val client = ApiConfig.getApiService().searchEvents(activeCode, keyword)
         client.enqueue(object : Callback<DicodingResponse> {
-            override fun onResponse(
-                call: Call<DicodingResponse>,
-                response: Response<DicodingResponse>
-            ) {
+            override fun onResponse(call: Call<DicodingResponse>, response: Response<DicodingResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val allEvents = response.body()?.listEvents ?: emptyList()
-
-                    val filteredEvents = if (keyword.isBlank()) {
-                        allEvents
-                    } else {
-                        allEvents.filter { event ->
-                            event.name.contains(keyword, ignoreCase = true) ||
-                                    event.description.contains(keyword, ignoreCase = true)
-                        }
+                    val filteredEvents = allEvents.filter { event ->
+                        event.name.contains(keyword, ignoreCase = true) ||
+                                event.description.contains(keyword, ignoreCase = true)
                     }
 
                     _finishedEvent.postValue(filteredEvents.ifEmpty { allEvents })
@@ -88,6 +80,7 @@ class FinishedEventViewModel : ViewModel() {
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
                 _isLoading.value = false
                 _finishedEvent.value = emptyList()
+                Log.e(TAG, "Failed to fetch events: ${t.message}")
             }
         })
     }

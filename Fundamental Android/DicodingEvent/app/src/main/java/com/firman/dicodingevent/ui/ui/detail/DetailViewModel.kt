@@ -1,6 +1,5 @@
 package com.firman.dicodingevent.ui.ui.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,44 +18,40 @@ class DetailViewModel : ViewModel() {
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     companion object {
-        private const val TAG = "DataViewModel"
+        private const val TAG = "DetailViewModel"
     }
 
     fun fetchEventDetail(eventId: String) {
-        _isLoading.value = true
-        ApiConfig.getApiService().getDetailEvent(eventId)
-            .enqueue(object : Callback<DicodingResponse> {
-                override fun onResponse(
-                    call: Call<DicodingResponse>,
-                    response: Response<DicodingResponse>
-                ) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        val eventResponse = response.body()
-                        if (eventResponse != null) {
-
-                            if (eventResponse.error) {
-                                _eventDetail.value = null
-                                return
-                            }
-                            val event = eventResponse.event
-                            if (event != null) {
-                                _eventDetail.value = event
+        if (_eventDetail.value == null) {
+            _isLoading.value = true
+            ApiConfig.getApiService().getDetailEvent(eventId)
+                .enqueue(object : Callback<DicodingResponse> {
+                    override fun onResponse(
+                        call: Call<DicodingResponse>,
+                        response: Response<DicodingResponse>
+                    ) {
+                        _isLoading.value = false
+                        if (response.isSuccessful) {
+                            val eventResponse = response.body()
+                            if (eventResponse != null) {
+                                if (eventResponse.error) {
+                                    _eventDetail.value = null
+                                    return
+                                }
+                                _eventDetail.value = eventResponse.event
                             } else {
                                 _eventDetail.value = null
                             }
                         } else {
                             _eventDetail.value = null
                         }
-                    } else {
+                    }
+
+                    override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
+                        _isLoading.value = false
                         _eventDetail.value = null
                     }
-                }
-
-                override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
-                    _isLoading.value = false
-                    _eventDetail.value = null
-                }
-            })
+                })
+        }
     }
 }

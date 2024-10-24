@@ -10,7 +10,6 @@
         android:id="@+id/carousel_image_view"
         android:layout_width="match_parent"
         android:layout_height="192dp"
-        android:contentDescription="TODO"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

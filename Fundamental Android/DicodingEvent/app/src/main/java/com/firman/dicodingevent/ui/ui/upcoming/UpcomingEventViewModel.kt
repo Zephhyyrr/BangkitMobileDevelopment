@@ -24,50 +24,9 @@ class UpcomingEventViewModel : ViewModel() {
     }
 
     init {
-        findActiveEvent()
-    }
-
-    fun searchEvents(keyword: String) {
-        _isLoading.value = true
-
-        val activeCode = if (keyword.isBlank()) 1 else -1
-
-        val client = ApiConfig.getApiService().searchEvents(activeCode, keyword)
-        client.enqueue(object : Callback<DicodingResponse> {
-            override fun onResponse(
-                call: Call<DicodingResponse>,
-                response: Response<DicodingResponse>
-            ) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    val allEvents = response.body()?.listEvents ?: emptyList()
-
-                    if (keyword.isBlank()) {
-                        _activeEvent.postValue(allEvents)
-                    } else {
-                        val filteredEvents = allEvents.filter { event ->
-                            event.name.contains(keyword, ignoreCase = true) ||
-                                    event.description.contains(keyword, ignoreCase = true)
-                        }
-
-                        if (filteredEvents.isEmpty()) {
-                            _activeEvent.postValue(allEvents)
-                        } else {
-                            _activeEvent.postValue(filteredEvents)
-                        }
-                    }
-                } else {
-                    Log.e(TAG, "Error: ${response.message()}")
-                    _activeEvent.postValue(emptyList())
-                }
-            }
-
-            override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(TAG, "Failure: ${t.message}")
-                _activeEvent.postValue(emptyList())
-            }
-        })
+        if (_activeEvent.value == null) {
+            findActiveEvent()
+        }
     }
 
     private fun findActiveEvent() {
@@ -82,15 +41,15 @@ class UpcomingEventViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val activeEvents = response.body()?.listEvents ?: emptyList()
-                    _activeEvent.postValue(activeEvents)
+                    _activeEvent.value = activeEvents
                 } else {
-                    Log.e(TAG, "Error: ${response.message()}")
+                    _activeEvent.value = emptyList()
                 }
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "Failure: ${t.message}")
+                _activeEvent.value = emptyList()
             }
         })
     }

@@ -13,8 +13,8 @@ import retrofit2.Response
 
 class HomeViewModel : ViewModel() {
 
-    private val _upcomingEvents = MutableLiveData<List<ListEventsItem>>()
-    val upcomingEvents: LiveData<List<ListEventsItem>> = _upcomingEvents
+    private val _upcomingEvents = MutableLiveData<List<ListEventsItem>?>()
+    val upcomingEvents: MutableLiveData<List<ListEventsItem>?> = _upcomingEvents
 
     private val _finishedEvents = MutableLiveData<List<ListEventsItem>>()
     val finishedEvents: LiveData<List<ListEventsItem>> = _finishedEvents
@@ -26,20 +26,18 @@ class HomeViewModel : ViewModel() {
         private const val TAG = "HomeViewModel"
     }
 
-    init {
-        fetchEvents()
-    }
-
     fun fetchEvents() {
-        fetchUpcomingEvents()
-        fetchFinishedEvents()
+        if (_upcomingEvents.value == null) {
+            fetchUpcomingEvents()
+        }
+        if (_finishedEvents.value == null) {
+            fetchFinishedEvents()
+        }
     }
 
     private fun fetchUpcomingEvents() {
         _isLoading.value = true
-
-        val client =
-            ApiConfig.getApiService().getEvents(1) // Assuming 1 is the keyword for upcoming events
+        val client = ApiConfig.getApiService().getEvents(1) // Fetching upcoming events
         client.enqueue(object : Callback<DicodingResponse> {
             override fun onResponse(
                 call: Call<DicodingResponse>,
@@ -47,26 +45,24 @@ class HomeViewModel : ViewModel() {
             ) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
-                    val allEvents = response.body()?.listEvents ?: emptyList()
-                    _upcomingEvents.postValue(allEvents.take(5)) // Limit to 5 upcoming events
+                    val events = response.body()?.listEvents?.take(5)
+                    _upcomingEvents.postValue(events)
                 } else {
-                    Log.e(TAG, "Error: ${response.message()}")
                     _upcomingEvents.postValue(emptyList())
                 }
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "Failure: ${t.message}")
                 _upcomingEvents.postValue(emptyList())
             }
         })
     }
 
+
     private fun fetchFinishedEvents() {
         _isLoading.value = true
-
-        val client = ApiConfig.getApiService().getEvents(0)
+        val client = ApiConfig.getApiService().getEvents(0) // Fetching finished events
         client.enqueue(object : Callback<DicodingResponse> {
             override fun onResponse(
                 call: Call<DicodingResponse>,
@@ -74,17 +70,14 @@ class HomeViewModel : ViewModel() {
             ) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
-                    val allEvents = response.body()?.listEvents ?: emptyList()
-                    _finishedEvents.postValue(allEvents.take(5))
+                    _finishedEvents.postValue(response.body()?.listEvents?.take(5))
                 } else {
-                    Log.e(TAG, "Error: ${response.message()}")
                     _finishedEvents.postValue(emptyList())
                 }
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "Failure: ${t.message}")
                 _finishedEvents.postValue(emptyList())
             }
         })

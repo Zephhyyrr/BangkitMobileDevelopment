@@ -20,6 +20,7 @@
         app:layout_constraintVertical_bias="0.5" />
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +37,6 @@
                 android:id="@+id/ivDetail"
                 android:layout_width="0dp"
                 android:layout_height="194dp"
-                android:contentDescription="TODO"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -170,9 +170,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvKouta" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_favorite_border" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
