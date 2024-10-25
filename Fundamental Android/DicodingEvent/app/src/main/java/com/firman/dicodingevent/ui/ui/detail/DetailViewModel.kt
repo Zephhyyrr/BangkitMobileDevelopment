@@ -56,7 +56,7 @@ class DetailViewModel(private val eventRepository: EventRepository) : ViewModel(
                                     return
                                 }
                                 _eventDetail.value = eventResponse.event
-                                checkIfFavorite(eventResponse.event?.id.toString()) // Check if the event is favorite
+                                checkIfFavorite(eventResponse.event?.id.toString())
                             } else {
                                 _eventDetail.value = null
                             }
@@ -74,7 +74,6 @@ class DetailViewModel(private val eventRepository: EventRepository) : ViewModel(
     }
 
     private fun checkIfFavorite(eventId: String) {
-        // Check favorite status from the repository
         eventRepository.getFavoriteEvent().observeForever { favorites ->
             _isFavorite.value = favorites.any { it.id == eventId }
         }

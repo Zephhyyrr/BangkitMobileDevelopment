@@ -6,15 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.firman.dicodingevent.R
+import com.firman.dicodingevent.worker.DailyReminderWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import java.util.concurrent.TimeUnit
 
 class SettingFragment : Fragment() {
 
     private lateinit var switchTheme: SwitchMaterial
+    private lateinit var switchNotification: SwitchMaterial
     private lateinit var settingPreferences: SettingPreferences
 
     override fun onCreateView(
@@ -26,10 +33,19 @@ class SettingFragment : Fragment() {
         settingPreferences = SettingPreferences.getInstance(requireContext().dataStore)
 
         switchTheme = view.findViewById(R.id.switch_theme)
+        switchNotification = view.findViewById(R.id.switch_notification)
 
+        // Load theme setting
         CoroutineScope(Dispatchers.Main).launch {
             settingPreferences.getThemeSetting().collect { isDarkModeActive ->
                 switchTheme.isChecked = isDarkModeActive
+            }
+        }
+
+        // Load notification setting
+        CoroutineScope(Dispatchers.Main).launch {
+            settingPreferences.getNotificationSetting().collect { isNotificationActive ->
+                switchNotification.isChecked = isNotificationActive
             }
         }
 
@@ -41,7 +57,30 @@ class SettingFragment : Fragment() {
             settingPreferences.saveThemeSetting(isChecked)
         }
 
+        switchNotification.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                startNotificationWork()  // Start notification work immediately
+            } else {
+                cancelNotificationWork()  // Cancel notification work
+            }
+            settingPreferences.saveNotificationSetting(isChecked)
+        }
+
         return view
     }
-}
 
+    private fun startNotificationWork() {
+        context?.let {
+            val workRequest = PeriodicWorkRequestBuilder<DailyReminderWorker>(1, TimeUnit.DAYS)
+                .addTag("NotificationWorker")
+                .build()
+            WorkManager.getInstance(it).enqueue(workRequest)
+        }
+    }
+
+    private fun cancelNotificationWork() {
+        context?.let {
+            WorkManager.getInstance(it).cancelAllWorkByTag("NotificationWorker")
+        }
+    }
+}

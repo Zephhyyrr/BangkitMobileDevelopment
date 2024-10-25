@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope.coroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,6 +17,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 class SettingPreferences private constructor(private val dataStore: DataStore<Preferences>) {
 
     private val THEME_KEY = booleanPreferencesKey("theme_setting")
+    private val NOTIFICATION_KEY = booleanPreferencesKey("notification_setting")
 
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
@@ -29,6 +29,21 @@ class SettingPreferences private constructor(private val dataStore: DataStore<Pr
         CoroutineScope(coroutineContext).launch {
             dataStore.edit { preferences ->
                 preferences[THEME_KEY] = isDarkModeActive
+            }
+        }
+    }
+
+    // New methods for notification settings
+    fun getNotificationSetting(): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[NOTIFICATION_KEY] ?: false
+        }
+    }
+
+    fun saveNotificationSetting(isNotificationActive: Boolean) {
+        CoroutineScope(coroutineContext).launch {
+            dataStore.edit { preferences ->
+                preferences[NOTIFICATION_KEY] = isNotificationActive
             }
         }
     }
@@ -46,3 +61,4 @@ class SettingPreferences private constructor(private val dataStore: DataStore<Pr
         }
     }
 }
+

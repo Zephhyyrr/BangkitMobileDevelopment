@@ -8,11 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.firman.dicodingevent.R
 import com.firman.dicodingevent.databinding.FragmentHomeBinding
-import com.firman.dicodingevent.ui.HomeEventUpcomingAdapter
-import androidx.navigation.fragment.findNavController
 import com.firman.dicodingevent.data.Result
+import com.firman.dicodingevent.ui.HomeEventUpcomingAdapter
 import com.firman.dicodingevent.ui.ui.finished.HomeEventFinishedAdapter
 
 class HomeFragment : Fragment() {
@@ -45,6 +45,7 @@ class HomeFragment : Fragment() {
         setupRecyclerViews()
         observeUpcomingEvents()
         observeFinishedEvents()
+        observeLoadingState()
 
         binding.btnSelengkapnya.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_finished)
@@ -68,15 +69,14 @@ class HomeFragment : Fragment() {
     private fun observeUpcomingEvents() {
         homeViewModel.upcomingEvents.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
                     upcomingEventAdapter.updateEvents(result.data)
                 }
                 is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Error loading upcoming events", Toast.LENGTH_SHORT).show()
+                }
+                Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
                 }
             }
         }
@@ -85,17 +85,22 @@ class HomeFragment : Fragment() {
     private fun observeFinishedEvents() {
         homeViewModel.finishedEvents.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
                     finishedEventAdapter.updateEvents(result.data)
                 }
                 is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Error loading finished events", Toast.LENGTH_SHORT).show()
+                }
+                Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
                 }
             }
+        }
+    }
+
+    private fun observeLoadingState() {
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 

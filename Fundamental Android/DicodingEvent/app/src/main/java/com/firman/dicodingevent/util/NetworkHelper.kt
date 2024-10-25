@@ -13,7 +13,7 @@ class NetworkHelper(private val activity: AppCompatActivity) {
     fun checkNetworkConnection(onConnected: () -> Unit, onDisconnected: () -> Unit) {
         if (isNetworkAvailable(activity)) {
             onConnected()
-            dialog?.dismiss() // Dismiss the dialog if internet is restored
+            dialog?.dismiss()
         } else {
             onDisconnected()
             showNoInternetDialog()

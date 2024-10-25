@@ -39,11 +39,12 @@ class FinishedEventFragment : Fragment() {
 
         setupRecyclerView()
         observeFinishedEvents()
+
+        showLoading(true)
     }
 
     private fun setupRecyclerView() {
-        eventAdapter = FinishedEventAdapter { _ ->
-        }
+        eventAdapter = FinishedEventAdapter { _ -> }
         binding.rvActive.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvActive.adapter = eventAdapter
 
@@ -64,6 +65,7 @@ class FinishedEventFragment : Fragment() {
                 }
                 is Result.Error -> {
                     showLoading(false)
+                    Toast.makeText(requireContext(), "Error fetching events", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -71,9 +73,6 @@ class FinishedEventFragment : Fragment() {
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        if (isLoading) {
-            binding.progressBar.bringToFront()
-        }
     }
 
     override fun onDestroyView() {
