@@ -1,7 +1,6 @@
 package com.firman.dicodingevent.ui.ui.detail
 
 import android.content.Intent
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +10,14 @@ import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.firman.dicodingevent.R
+import com.firman.dicodingevent.data.EventRepository
+import com.firman.dicodingevent.data.entity.EventEntity
 import com.firman.dicodingevent.data.response.ListEventsItem
+import com.firman.dicodingevent.data.retrofit.ApiConfig
+import com.firman.dicodingevent.database.FavoriteEventRoomDatabase
 import com.firman.dicodingevent.databinding.ActivityDetailBinding
+import com.firman.dicodingevent.util.AppExecutors
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class DetailActivity : AppCompatActivity() {
@@ -28,9 +33,17 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        val appExecutors = AppExecutors()
+
+        val database = FavoriteEventRoomDatabase.getDatabase(applicationContext)
+        val favoriteEventDao = database.favoriteEventDao()
+
+        val eventRepository = EventRepository.getInstance(ApiConfig.getApiService(), favoriteEventDao, appExecutors)
+        val factory = DetailViewModelFactory(eventRepository)
+
+        viewModel = ViewModelProvider(this, factory)[DetailViewModel::class.java]
+
         val eventId = intent.getStringExtra("EVENT_ID")
-        Log.d(TAG, "Received EVENT_ID: $eventId")
 
         viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -41,6 +54,29 @@ class DetailActivity : AppCompatActivity() {
                 updateUI(event)
             } else {
                 Log.e(TAG, "Event detail is null")
+            }
+        }
+
+        viewModel.isFavorite.observe(this) { isFavorite ->
+            val iconRes = if (isFavorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+            binding.floatingActionButton.setImageResource(iconRes)
+        }
+
+        binding.floatingActionButton.setOnClickListener {
+            val event = viewModel.eventDetail.value
+            if (event != null) {
+                val eventEntity = EventEntity(
+                    id = event.id.toString(),
+                    name = event.name,
+                    mediaCover = event.mediaCover,
+                    isFavorite = viewModel.isFavorite.value == true,
+                    active = true
+                )
+                if (viewModel.isFavorite.value == true) {
+                    viewModel.deleteFavorite(eventEntity)
+                } else {
+                    viewModel.saveFavorite(eventEntity)
+                }
             }
         }
 

@@ -25,7 +25,6 @@ class FinishedEventAdapter(private val onItemClick: (EventEntity) -> Unit) :
 
     class EventViewHolder(private val binding: ItemFinishedEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: EventEntity, onItemClick: (EventEntity) -> Unit) {
-            // Display truncated event name if it exceeds 20 characters
             val name = if (event.name.length > 20) {
                 event.name.substring(0, 20) + "..."
             } else {
@@ -34,15 +33,13 @@ class FinishedEventAdapter(private val onItemClick: (EventEntity) -> Unit) :
 
             binding.tvNamaEvent.text = name
 
-            // Load image using Glide
             Glide.with(binding.root.context)
-                .load(event.mediaCover)  // Adjust property if `mediaCover` is named differently in `EventEntity`
+                .load(event.mediaCover)
                 .into(binding.ivActivePicture)
 
-            // Set click listener to open DetailActivity with event ID
             binding.btnSelengkapnya.setOnClickListener {
                 val intent = Intent(binding.root.context, DetailActivity::class.java)
-                intent.putExtra("EVENT_ID", event.id)  // Ensure `id` is a property in `EventEntity`
+                intent.putExtra("EVENT_ID", event.id)
                 binding.root.context.startActivity(intent)
             }
         }

@@ -61,9 +61,6 @@ class FinishedEventFragment : Fragment() {
                     showLoading(false)
                     val events = result.data
                     eventAdapter.submitList(events)
-                    if (events.isEmpty()) {
-                        Toast.makeText(requireContext(), "No finished events found", Toast.LENGTH_SHORT).show()
-                    }
                 }
                 is Result.Error -> {
                     showLoading(false)

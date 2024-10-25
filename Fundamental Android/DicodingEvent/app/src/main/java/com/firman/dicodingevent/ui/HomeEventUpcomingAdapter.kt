@@ -1,5 +1,6 @@
 package com.firman.dicodingevent.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ class HomeEventUpcomingAdapter(
 
     override fun getItemCount(): Int = upcomingEvents.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateEvents(upcoming: List<EventEntity>) {
         upcomingEvents = upcoming.filter { it.active }.take(5)
         notifyDataSetChanged()

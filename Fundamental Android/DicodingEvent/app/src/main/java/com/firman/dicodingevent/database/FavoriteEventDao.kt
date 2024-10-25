@@ -7,7 +7,7 @@ import com.firman.dicodingevent.data.entity.EventEntity
 @Dao
 interface FavoriteEventDao {
 
-    @Query("SELECT * FROM event ORDER BY id ASC")
+    @Query("SELECT * FROM event ORDER BY id DESC")
     fun getAllFavoriteEvents(): LiveData<List<EventEntity>>
 
     @Query("SELECT * FROM event WHERE favorite = 1")
@@ -21,6 +21,9 @@ interface FavoriteEventDao {
 
     @Query("DELETE FROM event WHERE favorite = 0")
     fun deleteAllNonFavorite()
+
+    @Query("DELETE FROM event WHERE id = :eventId")
+    fun deleteFavoriteEvent(eventId: String)
 
     @Query("SELECT EXISTS(SELECT * FROM event WHERE id = :eventId AND favorite = 1)")
     fun isEventFavorite(eventId: String): Boolean

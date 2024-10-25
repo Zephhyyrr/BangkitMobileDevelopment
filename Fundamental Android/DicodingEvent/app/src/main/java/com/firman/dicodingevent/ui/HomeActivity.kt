@@ -58,12 +58,6 @@ class HomeActivity : AppCompatActivity() {
                 )
             }
         }
-
-        homeViewModel.upcomingEvents.observe(this) { events ->
-        }
-
-        homeViewModel.finishedEvents.observe(this) { events ->
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

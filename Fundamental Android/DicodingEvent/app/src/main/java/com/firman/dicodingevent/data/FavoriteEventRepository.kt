@@ -90,15 +90,13 @@ class EventRepository private constructor(
                             )
                             eventList.add(eventEntity)
                         }
-                        favoriteEventDao.deleteAllNonFavorite() // Menghapus event non-favorit
-                        favoriteEventDao.insertEvents(eventList) // Menyimpan semua event
+                        favoriteEventDao.deleteAllNonFavorite()
+                        favoriteEventDao.insertEvents(eventList)
 
                         appExecutors.mainThread.execute {
                             result.value = Result.Success(eventList)
                         }
                     }
-                } else {
-                    result.value = Result.Error(response.message() ?: "Unknown error")
                 }
             }
 
