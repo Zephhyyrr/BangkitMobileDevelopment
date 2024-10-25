@@ -1,20 +1,21 @@
-package com.firman.dicodingevent.ui
+package com.firman.dicodingevent.ui.ui.finished
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.firman.dicodingevent.data.response.ListEventsItem
+import com.firman.dicodingevent.data.entity.EventEntity
 import com.firman.dicodingevent.databinding.ItemHomeEventFinishedBinding
 import com.firman.dicodingevent.ui.ui.detail.DetailActivity
 
 class HomeEventFinishedAdapter(
-    private var finishedEvents: List<ListEventsItem> = emptyList()
+    private var finishedEvents: List<EventEntity> = emptyList()
 ) : RecyclerView.Adapter<HomeEventFinishedAdapter.FinishedEventViewHolder>() {
 
     class FinishedEventViewHolder(private val binding: ItemHomeEventFinishedBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(event: ListEventsItem) {
+        fun bind(event: EventEntity) {
             Glide.with(binding.root.context)
                 .load(event.mediaCover)
                 .into(binding.imgItemPhoto)
@@ -23,7 +24,7 @@ class HomeEventFinishedAdapter(
 
             binding.cardView.setOnClickListener {
                 val intent = Intent(binding.root.context, DetailActivity::class.java).apply {
-                    putExtra("EVENT_ID", event.id.toString())
+                    putExtra("EVENT_ID", event.id)
                 }
                 binding.root.context.startActivity(intent)
             }
@@ -41,8 +42,9 @@ class HomeEventFinishedAdapter(
 
     override fun getItemCount(): Int = finishedEvents.size
 
-    fun updateEvents(finished: List<ListEventsItem>) {
-        finishedEvents = finished.take(5) // Only take the first 5 items
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateEvents(finished: List<EventEntity>) {
+        finishedEvents = finished.filter { !it.active }.take(5)
         notifyDataSetChanged()
     }
 }

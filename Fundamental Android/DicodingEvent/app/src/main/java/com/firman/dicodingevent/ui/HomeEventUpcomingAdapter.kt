@@ -5,23 +5,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.firman.dicodingevent.data.response.ListEventsItem
+import com.firman.dicodingevent.data.entity.EventEntity
 import com.firman.dicodingevent.databinding.ItemHomeEventBinding
 import com.firman.dicodingevent.ui.ui.detail.DetailActivity
 
 class HomeEventUpcomingAdapter(
-    private var upcomingEvents: List<ListEventsItem> = emptyList()
+    private var upcomingEvents: List<EventEntity> = emptyList()
 ) : RecyclerView.Adapter<HomeEventUpcomingAdapter.UpcomingEventViewHolder>() {
 
     class UpcomingEventViewHolder(private val binding: ItemHomeEventBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(event: ListEventsItem) {
+        fun bind(event: EventEntity) {
             Glide.with(binding.root.context)
                 .load(event.mediaCover)
                 .into(binding.carouselImageView)
 
             binding.carouselImageView.setOnClickListener {
                 val intent = Intent(binding.root.context, DetailActivity::class.java)
-                intent.putExtra("EVENT_ID", event.id.toString())
+                intent.putExtra("EVENT_ID", event.id)
                 binding.root.context.startActivity(intent)
             }
         }
@@ -38,8 +38,8 @@ class HomeEventUpcomingAdapter(
 
     override fun getItemCount(): Int = upcomingEvents.size
 
-    fun updateEvents(upcoming: List<ListEventsItem>) {
-        upcomingEvents = upcoming.take(5)
+    fun updateEvents(upcoming: List<EventEntity>) {
+        upcomingEvents = upcoming.filter { it.active }.take(5)
         notifyDataSetChanged()
     }
 }

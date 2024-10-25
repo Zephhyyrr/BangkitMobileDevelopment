@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class NetworkReceiver(private val activity: AppCompatActivity) : BroadcastReceiver() {

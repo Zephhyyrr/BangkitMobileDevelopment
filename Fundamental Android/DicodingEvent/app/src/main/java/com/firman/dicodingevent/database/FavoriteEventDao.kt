@@ -11,9 +11,9 @@ interface FavoriteEventDao {
     fun getAllFavoriteEvents(): LiveData<List<EventEntity>>
 
     @Query("SELECT * FROM event WHERE favorite = 1")
-    fun getBookmarkedEvents(): LiveData<List<EventEntity>>
+    fun getFavoriteEvents(): LiveData<List<EventEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEvents(events: List<EventEntity>)
 
     @Update

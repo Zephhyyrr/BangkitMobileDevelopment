@@ -20,5 +20,8 @@ data class EventEntity(
     var mediaCover: String? = null,
 
     @field:ColumnInfo(name = "favorite")
-    var isFavorite: Boolean
+    var isFavorite: Boolean,
+
+    @field:ColumnInfo(name = "active")
+    var active: Boolean
 ) : Parcelable

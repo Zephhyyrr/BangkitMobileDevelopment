@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.firman.dicodingevent.data.response.ListEventsItem
+import com.firman.dicodingevent.data.entity.EventEntity
 import com.firman.dicodingevent.databinding.ItemFinishedEventBinding
 import com.firman.dicodingevent.ui.ui.detail.DetailActivity
 
-class FinishedEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
-    ListAdapter<ListEventsItem, FinishedEventAdapter.EventViewHolder>(EventDiffCallback()) {
+class FinishedEventAdapter(private val onItemClick: (EventEntity) -> Unit) :
+    ListAdapter<EventEntity, FinishedEventAdapter.EventViewHolder>(EventDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding = ItemFinishedEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,7 +24,8 @@ class FinishedEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
     }
 
     class EventViewHolder(private val binding: ItemFinishedEventBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(event: ListEventsItem, onItemClick: (ListEventsItem) -> Unit) {
+        fun bind(event: EventEntity, onItemClick: (EventEntity) -> Unit) {
+            // Display truncated event name if it exceeds 20 characters
             val name = if (event.name.length > 20) {
                 event.name.substring(0, 20) + "..."
             } else {
@@ -33,24 +34,26 @@ class FinishedEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
 
             binding.tvNamaEvent.text = name
 
+            // Load image using Glide
             Glide.with(binding.root.context)
-                .load(event.mediaCover)
+                .load(event.mediaCover)  // Adjust property if `mediaCover` is named differently in `EventEntity`
                 .into(binding.ivActivePicture)
 
+            // Set click listener to open DetailActivity with event ID
             binding.btnSelengkapnya.setOnClickListener {
                 val intent = Intent(binding.root.context, DetailActivity::class.java)
-                intent.putExtra("EVENT_ID", event.id.toString())
+                intent.putExtra("EVENT_ID", event.id)  // Ensure `id` is a property in `EventEntity`
                 binding.root.context.startActivity(intent)
             }
         }
     }
 
-    class EventDiffCallback : DiffUtil.ItemCallback<ListEventsItem>() {
-        override fun areItemsTheSame(oldItem: ListEventsItem, newItem: ListEventsItem): Boolean {
+    class EventDiffCallback : DiffUtil.ItemCallback<EventEntity>() {
+        override fun areItemsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ListEventsItem, newItem: ListEventsItem): Boolean {
+        override fun areContentsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
             return oldItem == newItem
         }
     }
