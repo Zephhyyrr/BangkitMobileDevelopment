@@ -1,4 +1,4 @@
-package com.firman.dicodingevent.utils
+package com.firman.dicodingevent.util
 
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
@@ -34,10 +34,10 @@ class NetworkReceiver(private val activity: AppCompatActivity) : BroadcastReceiv
     private fun showNoInternetDialog() {
         AlertDialog.Builder(activity).apply {
             setTitle("Tidak Ada Koneksi Internet")
-            setMessage("Aplikasi ini membutuhkan koneksi internet. Tekan OK untuk keluar.")
+            setMessage("Aplikasi ini membutuhkan koneksi internet. Tekan OK untuk melanjutkan.")
             setCancelable(false)
-            setPositiveButton("OK") { _, _ ->
-                activity.finishAffinity()
+            setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
             }
             show()
         }

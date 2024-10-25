@@ -30,25 +30,6 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <com.google.android.material.search.SearchBar
-                android:id="@+id/searchBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:hint="@string/searchbar_hint">
-
-            </com.google.android.material.search.SearchBar>
-
-            <com.google.android.material.search.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:hint="@string/searchbar_hint"
-                app:iconifiedByDefault="false"
-                app:layout_anchor="@id/searchBar">
-            </com.google.android.material.search.SearchView>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvActive"
                 android:layout_width="match_parent"

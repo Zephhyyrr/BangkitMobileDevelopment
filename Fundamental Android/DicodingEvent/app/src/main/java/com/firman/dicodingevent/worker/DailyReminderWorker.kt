@@ -1,7 +1,6 @@
 package com.firman.dicodingevent.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.firman.dicodingevent.data.response.ListEventsItem
@@ -9,7 +8,6 @@ import com.firman.dicodingevent.data.retrofit.ApiService
 import com.firman.dicodingevent.util.NotificationHelper
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.await
 
 class DailyReminderWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 

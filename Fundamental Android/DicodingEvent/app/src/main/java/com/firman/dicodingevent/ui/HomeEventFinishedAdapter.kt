@@ -1,4 +1,4 @@
-package com.firman.dicodingevent.ui.ui.finished
+package com.firman.dicodingevent.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent

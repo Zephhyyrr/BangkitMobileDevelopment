@@ -28,25 +28,25 @@ class HomeViewModel(private val eventRepository: EventRepository) : ViewModel() 
     }
 
     private fun loadUpcomingEvents() {
-        _isLoading.value = true // Start loading
+        _isLoading.value = true
         _upcomingEvents.value = Result.Loading
 
         eventRepository.getUpcomingEvents().observeForever { result ->
             _upcomingEvents.value = result
             if (result is Result.Success || result is Result.Error) {
-                _isLoading.value = false // Stop loading when data is received
+                _isLoading.value = false
             }
         }
     }
 
     private fun loadFinishedEvents() {
-        _isLoading.value = true // Start loading
+        _isLoading.value = true
         _finishedEvents.value = Result.Loading
 
         eventRepository.getFinishedEvents().observeForever { result ->
             _finishedEvents.value = result
             if (result is Result.Success || result is Result.Error) {
-                _isLoading.value = false // Stop loading when data is received
+                _isLoading.value = false
             }
         }
     }

@@ -31,4 +31,7 @@
     <string name="favorite">Favorite</string>
     <string name="finished">Finished</string>
     <string name="notifikasi">Notifikasi</string>
+    <string name="float_favorite">Float Favorite</string>
+    <string name="detail">Detail</string>
+    <string name="image">image</string>
 </resources>

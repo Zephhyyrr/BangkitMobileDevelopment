@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.firman.dicodingevent.R
 import com.firman.dicodingevent.worker.DailyReminderWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collect
 import java.util.concurrent.TimeUnit
 
 class SettingFragment : Fragment() {

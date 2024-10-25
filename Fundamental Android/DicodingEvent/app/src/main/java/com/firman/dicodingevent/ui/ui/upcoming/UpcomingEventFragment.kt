@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firman.dicodingevent.data.Result
 import com.firman.dicodingevent.databinding.FragmentUpcomingEventBinding
 import com.firman.dicodingevent.ui.EventAdapter
 
@@ -15,7 +16,11 @@ class UpcomingEventFragment : Fragment() {
 
     private var _binding: FragmentUpcomingEventBinding? = null
     private val binding get() = _binding!!
-    private val upcomingEventViewModel by viewModels<UpcomingEventViewModel>()
+
+    private val factory: UpcomingEventModelFactory by lazy {
+        UpcomingEventModelFactory.getInstance(requireContext())
+    }
+    private val upcomingEventViewModel: UpcomingEventViewModel by viewModels { factory }
     private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(
@@ -31,27 +36,28 @@ class UpcomingEventFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        observeViewModel()
+        observeUpcomingEvents()
     }
-
 
     private fun setupRecyclerView() {
-        eventAdapter = EventAdapter { _ ->
-        }
+        eventAdapter = EventAdapter { }
         binding.rvActive.layoutManager = LinearLayoutManager(requireActivity())
         binding.rvActive.adapter = eventAdapter
-
-        val itemDecoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-        binding.rvActive.addItemDecoration(itemDecoration)
+        binding.rvActive.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
     }
 
-    private fun observeViewModel() {
-        upcomingEventViewModel.activeEvent.observe(viewLifecycleOwner) { eventList ->
-            eventAdapter.submitList(eventList)
-        }
-
-        upcomingEventViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            showLoading(isLoading)
+    private fun observeUpcomingEvents() {
+        upcomingEventViewModel.upcomingEvents.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> showLoading(true)
+                is Result.Success -> {
+                    showLoading(false)
+                    eventAdapter.submitList(result.data)
+                }
+                is Result.Error -> {
+                    showLoading(false)
+                }
+            }
         }
     }
 

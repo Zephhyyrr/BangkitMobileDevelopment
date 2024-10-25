@@ -20,11 +20,11 @@ class FinishedEventAdapter(private val onItemClick: (EventEntity) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.bind(getItem(position), onItemClick)
+        holder.bind(getItem(position))
     }
 
     class EventViewHolder(private val binding: ItemFinishedEventBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(event: EventEntity, onItemClick: (EventEntity) -> Unit) {
+        fun bind(event: EventEntity) {
             val name = if (event.name.length > 20) {
                 event.name.substring(0, 20) + "..."
             } else {

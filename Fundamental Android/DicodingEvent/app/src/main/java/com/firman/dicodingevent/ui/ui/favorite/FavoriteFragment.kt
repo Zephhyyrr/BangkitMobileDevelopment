@@ -25,7 +25,7 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val factory = FavoriteModelFactory.getInstance(requireContext())
-        viewModel = ViewModelProvider(this, factory).get(FavoriteViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[FavoriteViewModel::class.java]
 
         binding.rvFavorite.layoutManager = LinearLayoutManager(context)
         adapter = FavoriteEventAdapter()

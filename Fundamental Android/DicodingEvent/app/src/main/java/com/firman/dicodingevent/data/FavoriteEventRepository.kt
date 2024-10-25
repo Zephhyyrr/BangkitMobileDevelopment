@@ -1,10 +1,10 @@
 package com.firman.dicodingevent.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.firman.dicodingevent.data.entity.EventEntity
 import com.firman.dicodingevent.data.response.DicodingResponse
-import com.firman.dicodingevent.data.response.ListEventsItem
 import com.firman.dicodingevent.data.retrofit.ApiService
 import com.firman.dicodingevent.database.FavoriteEventDao
 import com.firman.dicodingevent.util.AppExecutors
@@ -54,6 +54,7 @@ class EventRepository private constructor(
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
+                Log.e(TAG, "API call failed: ${t.message}")
                 result.value = Result.Error(t.message ?: "Unknown error")
             }
         })
@@ -101,6 +102,7 @@ class EventRepository private constructor(
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
+                Log.e(TAG, "API call failed: ${t.message}")
                 result.value = Result.Error(t.message ?: "Unknown error")
             }
         })
@@ -125,17 +127,10 @@ class EventRepository private constructor(
         }
     }
 
-    private fun ListEventsItem.toEntity(isFavorite: Boolean, active: Boolean) = EventEntity(
-        id = id.toString(),
-        name = name,
-        mediaCover = mediaCover,
-        isFavorite = isFavorite,
-        active = active
-    )
-
     companion object {
         @Volatile
         private var instance: EventRepository? = null
+        const val TAG = "Event Repository"
 
         fun getInstance(
             apiService: ApiService,

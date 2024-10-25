@@ -1,10 +1,11 @@
 package com.firman.dicodingevent.ui.ui.home
 
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +14,9 @@ import com.firman.dicodingevent.R
 import com.firman.dicodingevent.databinding.FragmentHomeBinding
 import com.firman.dicodingevent.data.Result
 import com.firman.dicodingevent.ui.HomeEventUpcomingAdapter
-import com.firman.dicodingevent.ui.ui.finished.HomeEventFinishedAdapter
+import com.firman.dicodingevent.ui.HomeEventFinishedAdapter
+import com.firman.dicodingevent.util.NetworkReceiver
+import androidx.appcompat.app.AppCompatActivity // Make sure to import AppCompatActivity
 
 class HomeFragment : Fragment() {
 
@@ -27,6 +30,8 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by viewModels { factory }
     private lateinit var upcomingEventAdapter: HomeEventUpcomingAdapter
     private lateinit var finishedEventAdapter: HomeEventFinishedAdapter
+
+    private lateinit var networkReceiver: NetworkReceiver
 
     companion object {
         const val ARG_TAB = "arg_tab"
@@ -51,7 +56,20 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_finished)
         }
 
+        networkReceiver = NetworkReceiver(requireActivity() as AppCompatActivity)
+
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        requireContext().registerReceiver(networkReceiver, filter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireContext().unregisterReceiver(networkReceiver)
     }
 
     private fun setupRecyclerViews() {
@@ -73,7 +91,6 @@ class HomeFragment : Fragment() {
                     upcomingEventAdapter.updateEvents(result.data)
                 }
                 is Result.Error -> {
-                    Toast.makeText(requireContext(), "Error loading upcoming events", Toast.LENGTH_SHORT).show()
                 }
                 Result.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
@@ -89,7 +106,6 @@ class HomeFragment : Fragment() {
                     finishedEventAdapter.updateEvents(result.data)
                 }
                 is Result.Error -> {
-                    Toast.makeText(requireContext(), "Error loading finished events", Toast.LENGTH_SHORT).show()
                 }
                 Result.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
