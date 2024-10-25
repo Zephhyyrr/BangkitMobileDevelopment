@@ -64,7 +64,6 @@ class FinishedEventFragment : Fragment() {
                 }
                 is Result.Error -> {
                     showLoading(false)
-                    Toast.makeText(requireContext(), "Error fetching finished events", Toast.LENGTH_SHORT).show()
                 }
             }
         }
