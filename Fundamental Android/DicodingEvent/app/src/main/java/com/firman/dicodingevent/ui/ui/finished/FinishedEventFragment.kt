@@ -43,7 +43,7 @@ class FinishedEventFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        eventAdapter = FinishedEventAdapter { _ -> }
+        eventAdapter = FinishedEventAdapter()
         binding.rvActive.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvActive.adapter = eventAdapter
 

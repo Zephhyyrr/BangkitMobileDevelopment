@@ -47,7 +47,7 @@
         android:id="@+id/tv_notifikasi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ganti_mode_tema"
+        android:text="@string/switch_notify"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvNotification" />
 

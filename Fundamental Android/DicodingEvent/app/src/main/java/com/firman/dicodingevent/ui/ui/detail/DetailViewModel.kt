@@ -22,12 +22,6 @@ class DetailViewModel(private val eventRepository: EventRepository) : ViewModel(
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> get() = _isFavorite
 
-    companion object {
-        private const val TAG = "DetailViewModel"
-    }
-
-    fun getFavoriteEvent() = eventRepository.getFavoriteEvent()
-
     fun saveFavorite(event: EventEntity) {
         eventRepository.setFavoriteEvent(event, true)
         _isFavorite.value = true

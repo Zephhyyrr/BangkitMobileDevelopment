@@ -1,7 +1,6 @@
 package com.firman.dicodingevent.ui
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
@@ -11,8 +10,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.firman.dicodingevent.R
 import com.firman.dicodingevent.databinding.ActivityHomeBinding
-import com.firman.dicodingevent.ui.ui.home.HomeViewModel
-import com.firman.dicodingevent.ui.ui.home.HomeViewModelFactory
 import com.firman.dicodingevent.ui.ui.setting.SettingPreferences
 import com.firman.dicodingevent.ui.ui.setting.dataStore
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,7 +19,6 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var settingPreferences: SettingPreferences
-    private val homeViewModel: HomeViewModel by viewModels { HomeViewModelFactory.getInstance(this) } // Using 'by viewModels' for better lifecycle handling
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

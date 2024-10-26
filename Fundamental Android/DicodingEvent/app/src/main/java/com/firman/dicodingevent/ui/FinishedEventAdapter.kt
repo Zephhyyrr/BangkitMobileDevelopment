@@ -11,7 +11,7 @@ import com.firman.dicodingevent.data.entity.EventEntity
 import com.firman.dicodingevent.databinding.ItemFinishedEventBinding
 import com.firman.dicodingevent.ui.ui.detail.DetailActivity
 
-class FinishedEventAdapter(private val onItemClick: (EventEntity) -> Unit) :
+class FinishedEventAdapter :
     ListAdapter<EventEntity, FinishedEventAdapter.EventViewHolder>(EventDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {

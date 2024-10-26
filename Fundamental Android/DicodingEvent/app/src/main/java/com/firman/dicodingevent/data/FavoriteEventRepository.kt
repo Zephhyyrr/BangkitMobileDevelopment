@@ -54,7 +54,7 @@ class EventRepository private constructor(
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
-                Log.e(TAG, "API call failed: ${t.message}")
+                Log.e(TAG, "API call failed")
                 result.value = Result.Error(t.message ?: "Unknown error")
             }
         })
@@ -72,7 +72,7 @@ class EventRepository private constructor(
         val result = MediatorLiveData<Result<List<EventEntity>>>()
         result.value = Result.Loading
 
-        val client = apiService.getEvents(0) // Mengambil event finished
+        val client = apiService.getEvents(0)
         client.enqueue(object : Callback<DicodingResponse> {
             override fun onResponse(call: Call<DicodingResponse>, response: Response<DicodingResponse>) {
                 if (response.isSuccessful) {
@@ -102,7 +102,7 @@ class EventRepository private constructor(
             }
 
             override fun onFailure(call: Call<DicodingResponse>, t: Throwable) {
-                Log.e(TAG, "API call failed: ${t.message}")
+                Log.e(TAG, "API call failed")
                 result.value = Result.Error(t.message ?: "Unknown error")
             }
         })

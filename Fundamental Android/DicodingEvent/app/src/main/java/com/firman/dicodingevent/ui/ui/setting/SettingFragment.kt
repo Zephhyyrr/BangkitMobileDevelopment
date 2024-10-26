@@ -1,10 +1,15 @@
 package com.firman.dicodingevent.ui.ui.setting
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -22,6 +27,27 @@ class SettingFragment : Fragment() {
     private lateinit var switchNotification: SwitchMaterial
     private lateinit var settingPreferences: SettingPreferences
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Aktifkan Notifikasi Harian ? ")
+                    .setMessage("Izin Notifikasi Diperlukan")
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.dismiss()
+                        startNotificationWork()
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            } else {
+                Toast.makeText(requireContext(), "Notifications permission rejected", Toast.LENGTH_SHORT).show()
+                switchNotification.isChecked = false
+            }
+        }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,14 +59,12 @@ class SettingFragment : Fragment() {
         switchTheme = view.findViewById(R.id.switch_theme)
         switchNotification = view.findViewById(R.id.switch_notification)
 
-        // Load theme setting
         CoroutineScope(Dispatchers.Main).launch {
             settingPreferences.getThemeSetting().collect { isDarkModeActive ->
                 switchTheme.isChecked = isDarkModeActive
             }
         }
 
-        // Load notification setting
         CoroutineScope(Dispatchers.Main).launch {
             settingPreferences.getNotificationSetting().collect { isNotificationActive ->
                 switchNotification.isChecked = isNotificationActive
@@ -57,14 +81,19 @@ class SettingFragment : Fragment() {
 
         switchNotification.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                startNotificationWork()  // Start notification work immediately
+                requestNotificationPermission()
             } else {
-                cancelNotificationWork()  // Cancel notification work
+                cancelNotificationWork()
             }
             settingPreferences.saveNotificationSetting(isChecked)
         }
 
         return view
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestNotificationPermission() {
+        requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
     }
 
     private fun startNotificationWork() {

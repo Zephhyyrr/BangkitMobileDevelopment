@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.firman.dicodingevent"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -65,6 +65,8 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.android.async.http)
     ksp(libs.room.compiler)
     implementation(libs.lifecycle.livedata.ktx)
     implementation (libs.androidx.work.runtime.ktx)

@@ -3,6 +3,7 @@ package com.firman.dicodingevent.ui.ui.home
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var networkReceiver: NetworkReceiver
 
     companion object {
-        const val ARG_TAB = "arg_tab"
+        const val TAG = "HomeFragment"
     }
 
     override fun onCreateView(
@@ -91,6 +92,7 @@ class HomeFragment : Fragment() {
                     upcomingEventAdapter.updateEvents(result.data)
                 }
                 is Result.Error -> {
+                    Log.d(TAG, "Error fetching")
                 }
                 Result.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
@@ -106,6 +108,7 @@ class HomeFragment : Fragment() {
                     finishedEventAdapter.updateEvents(result.data)
                 }
                 is Result.Error -> {
+                    Log.d(TAG, "Error fetching")
                 }
                 Result.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
