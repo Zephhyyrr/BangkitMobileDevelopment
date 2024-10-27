@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-10-23T18:16:29.919336100Z">
+        <DropdownSelection timestamp="2024-10-27T06:50:29.386910400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\ardia\.android\avd\Kotlin-1.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\ardia\.android\avd\Kotlin.avd" />
             </handle>
           </Target>
         </DropdownSelection>

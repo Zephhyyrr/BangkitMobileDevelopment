@@ -48,6 +48,7 @@ class SettingFragment : Fragment() {
                 switchNotification.isChecked = false
             }
         }
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

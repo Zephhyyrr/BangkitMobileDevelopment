@@ -23,7 +23,7 @@ class DailyReminderWorker(context: Context, workerParams: WorkerParameters) : Wo
         const val CHANNEL_ID = "channel_01"
         const val CHANNEL_NAME = "Event Reminder"
         const val BASE_URL = BuildConfig.BASE_URL
-        const val EVENTS_ENDPOINT = "/events?active=0&limit=1"
+        const val EVENTS_ENDPOINT = "/events?active=1&limit=1"
     }
 
     override fun doWork(): Result {

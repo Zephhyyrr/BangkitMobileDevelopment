@@ -1,9 +1,11 @@
 package com.firman.dicodingevent.ui.ui.upcoming
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -23,6 +25,10 @@ class UpcomingEventFragment : Fragment() {
     private val upcomingEventViewModel: UpcomingEventViewModel by viewModels { factory }
     private lateinit var eventAdapter: EventAdapter
 
+    companion object {
+        const val TAG = "UpcomingEventFragment"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,6 +43,7 @@ class UpcomingEventFragment : Fragment() {
 
         setupRecyclerView()
         observeUpcomingEvents()
+        observeLoadingState()
     }
 
     private fun setupRecyclerView() {
@@ -49,20 +56,22 @@ class UpcomingEventFragment : Fragment() {
     private fun observeUpcomingEvents() {
         upcomingEventViewModel.upcomingEvents.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Result.Loading -> showLoading(true)
                 is Result.Success -> {
-                    showLoading(false)
                     eventAdapter.submitList(result.data)
                 }
                 is Result.Error -> {
-                    showLoading(false)
+                    Log.d(TAG, "Error fetching upcoming events:")
+                    Toast.makeText(requireContext(), "Error fetching Upcoming events", Toast.LENGTH_SHORT).show()
                 }
+                Result.Loading -> binding.progressBar.visibility = View.VISIBLE
             }
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    private fun observeLoadingState() {
+        upcomingEventViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
     }
 
     override fun onDestroyView() {
