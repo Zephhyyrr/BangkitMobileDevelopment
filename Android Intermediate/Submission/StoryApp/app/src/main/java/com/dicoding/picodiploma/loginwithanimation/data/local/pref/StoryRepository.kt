@@ -6,10 +6,6 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.liveData
 import com.dicoding.picodiploma.loginwithanimation.data.local.model.UserModel
 import com.dicoding.picodiploma.loginwithanimation.data.remote.ApiConfig
 import com.dicoding.picodiploma.loginwithanimation.data.remote.ApiService
