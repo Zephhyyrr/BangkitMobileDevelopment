@@ -9,9 +9,17 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.picodiploma.loginwithanimation.R
+import com.dicoding.picodiploma.loginwithanimation.adapter.LoadingStateAdapter
+import com.dicoding.picodiploma.loginwithanimation.adapter.StoryAdapter
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityMainBinding
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
+import com.dicoding.picodiploma.loginwithanimation.view.home.HomeActivity
+import com.dicoding.picodiploma.loginwithanimation.view.upload.UpStoryActivity
 import com.dicoding.picodiploma.loginwithanimation.view.welcome.WelcomeActivity
 
 class MainActivity : AppCompatActivity() {
@@ -25,16 +33,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.getSession().observe(this) { user ->
-            if (!user.isLogin) {
-                startActivity(Intent(this, WelcomeActivity::class.java))
-                finish()
-            }
-        }
-
         setupView()
         setupAction()
-        playAnimation()
+        showRecyclerList()
     }
 
     private fun setupView() {
@@ -51,25 +52,65 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
-        binding.logoutButton.setOnClickListener {
-            viewModel.logout()
+        viewModel.getSession().observe(this) { session ->
+            if (!session.isLogin) {
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                binding.progressBar.visibility = View.GONE
+                getStoriesData()
+            }
+
+            binding.toAppBar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_logout -> {
+                        AlertDialog.Builder(this).apply {
+                            setTitle("Konfirmasi Logout")
+                            setMessage("Apakah Anda yakin ingin logout?")
+                            setPositiveButton("Ya") { _, _ ->
+                                viewModel.logout()
+                            }
+                            setNegativeButton("Tidak") { _, _ ->
+
+                            }
+                            create()
+                            show()
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
+        binding.fabCamera.setOnClickListener {
+            val intent = Intent(this, UpStoryActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, -30f, 30f).apply {
-            duration = 6000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }.start()
+    private fun showRecyclerList() {
+        val layoutManager = LinearLayoutManager(this)
+        binding.rvStory.layoutManager = layoutManager
+        val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
+        binding.rvStory.addItemDecoration(itemDecoration)
+    }
 
-        val name = ObjectAnimator.ofFloat(binding.nameTextView, View.ALPHA, 1f).setDuration(100)
-        val message = ObjectAnimator.ofFloat(binding.messageTextView, View.ALPHA, 1f).setDuration(100)
-        val logout = ObjectAnimator.ofFloat(binding.logoutButton, View.ALPHA, 1f).setDuration(100)
+    private fun getStoriesData() {
+        val adapter = StoryAdapter()
+        binding.rvStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        viewModel.getStories().observe(this) {
+            adapter.submitData(lifecycle, it)
+        }
+    }
 
-        AnimatorSet().apply {
-            playSequentially(name, message, logout)
-            startDelay = 100
-        }.start()
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getSession()
     }
 }

@@ -2,14 +2,16 @@ package com.dicoding.picodiploma.loginwithanimation.view.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dicoding.picodiploma.loginwithanimation.data.UserRepository
-import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
+import com.dicoding.picodiploma.loginwithanimation.data.local.model.UserModel
+import com.dicoding.picodiploma.loginwithanimation.data.local.pref.UserRepository
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: UserRepository) : ViewModel() {
-    fun saveSession(user: UserModel) {
+class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
+    fun loginUser(email: String, password: String) = userRepository.loginUser(email, password)
+
+    fun saveSession(userModel: UserModel) {
         viewModelScope.launch {
-            repository.saveSession(user)
+            userRepository.saveSession(userModel)
         }
     }
 }

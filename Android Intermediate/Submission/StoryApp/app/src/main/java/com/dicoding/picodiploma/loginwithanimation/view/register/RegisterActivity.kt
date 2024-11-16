@@ -1,4 +1,4 @@
-package com.dicoding.picodiploma.loginwithanimation.view.login
+package com.dicoding.picodiploma.loginwithanimation.view.register
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -12,22 +12,21 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityLoginBinding
-import com.dicoding.picodiploma.loginwithanimation.data.local.model.UserModel
-import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
-import com.dicoding.picodiploma.loginwithanimation.view.main.MainActivity
+import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityRegisterBinding
 import com.dicoding.picodiploma.loginwithanimation.utils.Result
+import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
+import com.dicoding.picodiploma.loginwithanimation.view.login.LoginActivity
 
-
-class LoginActivity : AppCompatActivity() {
-    private val viewModel by viewModels<LoginViewModel> {
+class RegisterActivity : AppCompatActivity() {
+    private val viewModel by viewModels<RegisterViewModel> {
         ViewModelFactory.getInstance(application)
     }
-    private lateinit var binding: ActivityLoginBinding
+
+    private lateinit var binding: ActivityRegisterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupView()
@@ -49,10 +48,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
-        binding.loginButton.setOnClickListener {
-            val email = binding.edLoginEmail.text
-            val pass = binding.edLoginPassword.text
-            viewModel.loginUser(email.toString(), pass.toString())
+        binding.registerButton.setOnClickListener {
+            val email = binding.edRegisterEmail.text.toString()
+            val name = binding.edRegisterName.text.toString()
+            val password = binding.edRegisterPassword.text.toString()
+
+            viewModel.registerUser(name.toString(), email.toString(), password.toString())
                 .observe(this) { result ->
                     if (result != null) {
                         when (result) {
@@ -61,20 +62,12 @@ class LoginActivity : AppCompatActivity() {
                             }
 
                             is Result.Success -> {
-                                viewModel.saveSession(
-                                    UserModel(
-                                        result.data.loginResult.name,
-                                        result.data.loginResult.userId,
-                                        result.data.loginResult.token,
-                                        true
-                                    )
-                                )
                                 binding.progressBar.visibility = View.GONE
                                 AlertDialog.Builder(this).apply {
-                                    setTitle("Login ${result.data.message}!")
-                                    setMessage("Welcome ${result.data.loginResult.name} to StoryApp")
-                                    setPositiveButton("Next") { _, _ ->
-                                        val intent = Intent(context, MainActivity::class.java)
+                                    setTitle("Register Berhasil!")
+                                    setMessage(result.data)
+                                    setPositiveButton("Login") { _, _ ->
+                                        val intent = Intent(context, LoginActivity::class.java)
                                         intent.flags =
                                             Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                                         startActivity(intent)
@@ -107,30 +100,33 @@ class LoginActivity : AppCompatActivity() {
         }.start()
 
         val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(100)
-        val message =
-            ObjectAnimator.ofFloat(binding.messageTextView, View.ALPHA, 1f).setDuration(100)
+        val nameTextView =
+            ObjectAnimator.ofFloat(binding.nameTextView, View.ALPHA, 1f).setDuration(100)
+        val nameEditTextLayout =
+            ObjectAnimator.ofFloat(binding.edRegisterName, View.ALPHA, 1f).setDuration(100)
         val emailTextView =
             ObjectAnimator.ofFloat(binding.emailTextView, View.ALPHA, 1f).setDuration(100)
         val emailEditTextLayout =
-            ObjectAnimator.ofFloat(binding.edLoginEmail, View.ALPHA, 1f).setDuration(100)
+            ObjectAnimator.ofFloat(binding.edRegisterEmail, View.ALPHA, 1f).setDuration(100)
         val passwordTextView =
             ObjectAnimator.ofFloat(binding.passwordTextView, View.ALPHA, 1f).setDuration(100)
         val passwordEditTextLayout =
-            ObjectAnimator.ofFloat(binding.edLoginPassword, View.ALPHA, 1f).setDuration(100)
-        val login = ObjectAnimator.ofFloat(binding.loginButton, View.ALPHA, 1f).setDuration(100)
+            ObjectAnimator.ofFloat(binding.edRegisterPassword, View.ALPHA, 1f).setDuration(100)
+        val signup = ObjectAnimator.ofFloat(binding.registerButton, View.ALPHA, 1f).setDuration(100)
+
 
         AnimatorSet().apply {
             playSequentially(
                 title,
-                message,
+                nameTextView,
+                nameEditTextLayout,
                 emailTextView,
                 emailEditTextLayout,
                 passwordTextView,
                 passwordEditTextLayout,
-                login
+                signup
             )
             startDelay = 100
         }.start()
     }
-
 }
