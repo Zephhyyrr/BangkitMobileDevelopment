@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -98,16 +99,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun getStoriesData() {
         val adapter = StoryAdapter()
-        binding.rvStory.adapter = adapter.withLoadStateFooter(
-            footer = LoadingStateAdapter {
-                adapter.retry()
+        binding.rvStory.adapter = adapter
+        binding.progressBar.visibility = View.VISIBLE
+
+        viewModel.getStories(this).observe(this) { stories ->
+            binding.progressBar.visibility = View.GONE
+
+            if (stories != null && stories.isNotEmpty()) {
+                adapter.submitList(stories)
+            } else {
+                Toast.makeText(this, "Tidak ada cerita yang ditemukan", Toast.LENGTH_SHORT).show()
             }
-        )
-        viewModel.getStories().observe(this) {
-            adapter.submitData(lifecycle, it)
         }
     }
-
 
     override fun onResume() {
         super.onResume()

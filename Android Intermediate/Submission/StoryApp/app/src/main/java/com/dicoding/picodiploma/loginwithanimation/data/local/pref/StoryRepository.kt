@@ -1,6 +1,10 @@
 package com.dicoding.picodiploma.loginwithanimation.data.local.pref
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -15,9 +19,11 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import com.dicoding.picodiploma.loginwithanimation.data.remote.response.ErrorResponse
 import com.dicoding.picodiploma.loginwithanimation.data.remote.response.ListStoryItem
-import com.dicoding.picodiploma.loginwithanimation.paging.StoryPaging
 import com.dicoding.picodiploma.loginwithanimation.utils.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -81,17 +87,26 @@ private constructor(
         userPreference.logout()
     }
 
-    fun getStories(): LiveData<PagingData<ListStoryItem>> {
+    fun getStories(context: Context): LiveData<List<ListStoryItem>> {
         val user = runBlocking { userPreference.getSession().first() }
         val apiService = ApiConfig.getApiService(user.token)
-        return Pager(
-            config = PagingConfig(pageSize = 5),
-            pagingSourceFactory = {
-                StoryPaging(apiService)
+        val result = MutableLiveData<List<ListStoryItem>>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val storyResponse = apiService.getStories()
+                result.postValue(storyResponse.listStory)
+            } catch (e: Exception) {
+                Log.e("getStories", "Failed to get stories: ${e.message}")
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(context, "Story gagal didapatkan", Toast.LENGTH_SHORT).show()
+                }
             }
-        ).liveData
+        }
+
+        return result
     }
-//
+
     fun getDetailStory(id: String): LiveData<Result<DetailStoryResponse>> = liveData {
         try {
             val user = runBlocking { userPreference.getSession().first() }
