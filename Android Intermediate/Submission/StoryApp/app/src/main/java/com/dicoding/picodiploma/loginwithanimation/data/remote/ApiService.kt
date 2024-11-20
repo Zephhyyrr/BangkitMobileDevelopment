@@ -33,7 +33,15 @@ interface ApiService {
     ): LoginResponse
 
     @GET("stories")
-    suspend fun getStories(): StoryResponse
+    suspend fun getStories(
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 20
+    ): StoryResponse
+
+    @GET("stories")
+    suspend fun getStoryWithLocation(
+        @Query("location") location: Int = 1,
+    ): StoryResponse
 
     @GET("stories/{id}")
     suspend fun getDetailStory(@Path("id") id: String): DetailStoryResponse
@@ -43,5 +51,14 @@ interface ApiService {
     suspend fun uploadImage(
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody
+    ): UpStoryResponse
+
+    @Multipart
+    @POST("stories")
+    suspend fun uploadImageWithLocation(
+        @Part file: MultipartBody.Part,
+        @Part("description") description: RequestBody,
+        @Part("lat") lat: RequestBody,
+        @Part("lon") lon: RequestBody
     ): UpStoryResponse
 }

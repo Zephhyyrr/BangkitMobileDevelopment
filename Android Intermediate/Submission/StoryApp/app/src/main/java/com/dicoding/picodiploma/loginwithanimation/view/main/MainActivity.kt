@@ -1,26 +1,24 @@
 package com.dicoding.picodiploma.loginwithanimation.view.main
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.picodiploma.loginwithanimation.R
+import com.dicoding.picodiploma.loginwithanimation.adapter.LoadingStateAdapter
 import com.dicoding.picodiploma.loginwithanimation.adapter.StoryAdapter
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityMainBinding
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.dicoding.picodiploma.loginwithanimation.view.home.HomeActivity
+import com.dicoding.picodiploma.loginwithanimation.view.maps.MapsActivity
 import com.dicoding.picodiploma.loginwithanimation.view.upload.UpStoryActivity
-import com.dicoding.picodiploma.loginwithanimation.view.welcome.WelcomeActivity
 
 class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<MainViewModel> {
@@ -79,6 +77,12 @@ class MainActivity : AppCompatActivity() {
                         }
                         true
                     }
+
+                    R.id.menu_maps -> {
+                        val intent = Intent(this, MapsActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
                     else -> false
                 }
             }
@@ -98,19 +102,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun getStoriesData() {
         val adapter = StoryAdapter()
-        binding.rvStory.adapter = adapter
-        binding.progressBar.visibility = View.VISIBLE
+        adapter.removeDivider(binding.rvStory)
 
-        viewModel.getStories(this).observe(this) { stories ->
-            binding.progressBar.visibility = View.GONE
-
-            if (stories != null && stories.isNotEmpty()) {
-                adapter.submitList(stories)
-            } else {
-                Toast.makeText(this, "Tidak ada cerita yang ditemukan", Toast.LENGTH_SHORT).show()
+        binding.rvStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
             }
+        )
+        viewModel.getStories().observe(this) {
+            adapter.submitData(lifecycle, it)
         }
     }
+
 
     override fun onResume() {
         super.onResume()

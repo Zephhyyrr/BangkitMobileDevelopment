@@ -3,6 +3,7 @@ package com.dicoding.picodiploma.loginwithanimation.view.upload
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -16,13 +17,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.dicoding.picodiploma.loginwithanimation.R
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityUpStoryBinding
-import com.dicoding.picodiploma.loginwithanimation.utils.Result
 import com.dicoding.picodiploma.loginwithanimation.utils.reduceFileImage
 import com.dicoding.picodiploma.loginwithanimation.utils.uriToFile
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.dicoding.picodiploma.loginwithanimation.view.camera.CameraActivity
+import com.dicoding.picodiploma.loginwithanimation.utils.Result
 import com.dicoding.picodiploma.loginwithanimation.view.camera.CameraActivity.Companion.CAMERA_RESULT
 import com.dicoding.picodiploma.loginwithanimation.view.main.MainActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class UpStoryActivity : AppCompatActivity() {
     private val viewModel by viewModels<UpStoryViewModel> {
@@ -31,6 +34,8 @@ class UpStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUpStoryBinding
 
     private var currentImageUri: Uri? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 
     private val launcherGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
@@ -39,7 +44,7 @@ class UpStoryActivity : AppCompatActivity() {
             currentImageUri = uri
             showImage()
         } else {
-            Toast.makeText(this, "No media selected", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.no_media_selected, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -57,9 +62,27 @@ class UpStoryActivity : AppCompatActivity() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                Toast.makeText(this, "Permission request granted", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this, "Permission request denied", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_LONG).show()
+            }
+        }
+
+    private val requestPermissionLocationLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
+                    uploadImageLocation()
+                }
+
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                    uploadImageLocation()
+                }
+
+                else -> {
+                }
             }
         }
 
@@ -68,6 +91,10 @@ class UpStoryActivity : AppCompatActivity() {
         binding = ActivityUpStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         enableEdgeToEdge()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        val smLocation = binding.smLocation
+        var state = false
 
         if (!allPermissionGranted()) {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
@@ -80,8 +107,17 @@ class UpStoryActivity : AppCompatActivity() {
         binding.btnGallery.setOnClickListener {
             startGallery()
         }
+
         binding.buttonAdd.setOnClickListener {
-            uploadImage()
+            if (state) {
+                uploadImageLocation()
+            } else {
+                uploadImage()
+            }
+        }
+
+        smLocation.setOnCheckedChangeListener { _, isChecked ->
+            state = isChecked
         }
     }
 
@@ -137,6 +173,77 @@ class UpStoryActivity : AppCompatActivity() {
 
         } ?: showToast(getString(R.string.empty_image))
     }
+
+    private fun checkPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun uploadImageLocation() {
+        currentImageUri?.let { uri ->
+            val imageFile = uriToFile(uri, this).reduceFileImage()
+            val description = binding.edAddDescription.text.toString()
+
+            if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+            ) {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        viewModel.uploadImageWithLocation(
+                            imageFile,
+                            description,
+                            location.latitude,
+                            location.longitude
+                        )
+                            .observe(this) { result ->
+                                if (result != null) {
+                                    when (result) {
+                                        is Result.Loading -> {
+                                            binding.progressBar.visibility = View.VISIBLE
+                                        }
+
+                                        is Result.Success -> {
+                                            Toast.makeText(
+                                                this,
+                                                result.data.message,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            binding.progressBar.visibility = View.GONE
+                                            val intent = Intent(this, MainActivity::class.java)
+                                            intent.flags =
+                                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                            startActivity(intent)
+                                        }
+
+                                        is Result.Error -> {
+                                            Toast.makeText(
+                                                this,
+                                                result.error,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            binding.progressBar.visibility = View.GONE
+                                        }
+                                    }
+                                }
+                            }
+                    } else {
+                        showToast(getString(R.string.location_not_found))
+                    }
+                }
+            } else {
+                requestPermissionLocationLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            }
+
+        } ?: showToast(getString(R.string.empty_image))
+    }
+
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

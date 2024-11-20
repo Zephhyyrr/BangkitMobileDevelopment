@@ -1,11 +1,11 @@
 package com.dicoding.picodiploma.loginwithanimation.data.local.pref
 
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.dicoding.picodiploma.loginwithanimation.data.local.model.UserModel
 import com.dicoding.picodiploma.loginwithanimation.data.remote.ApiConfig
 import com.dicoding.picodiploma.loginwithanimation.data.remote.ApiService
@@ -15,11 +15,9 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import com.dicoding.picodiploma.loginwithanimation.data.remote.response.ErrorResponse
 import com.dicoding.picodiploma.loginwithanimation.data.remote.response.ListStoryItem
+import com.dicoding.picodiploma.loginwithanimation.paging.StoryPaging
 import com.dicoding.picodiploma.loginwithanimation.utils.Result
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -83,24 +81,15 @@ private constructor(
         userPreference.logout()
     }
 
-    fun getStories(context: Context): LiveData<List<ListStoryItem>> {
+    fun getStories(): LiveData<PagingData<ListStoryItem>> {
         val user = runBlocking { userPreference.getSession().first() }
         val apiService = ApiConfig.getApiService(user.token)
-        val result = MutableLiveData<List<ListStoryItem>>()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val storyResponse = apiService.getStories()
-                result.postValue(storyResponse.listStory)
-            } catch (e: Exception) {
-                Log.e("getStories", "Failed to get stories: ${e.message}")
-                CoroutineScope(Dispatchers.Main).launch {
-                    Toast.makeText(context, "Story gagal didapatkan", Toast.LENGTH_SHORT).show()
-                }
+        return Pager(
+            config = PagingConfig(pageSize = 5),
+            pagingSourceFactory = {
+                StoryPaging(apiService)
             }
-        }
-
-        return result
+        ).liveData
     }
 
     fun getDetailStory(id: String): LiveData<Result<DetailStoryResponse>> = liveData {
@@ -113,7 +102,6 @@ private constructor(
             emit(Result.Error(e.message.toString()))
         }
     }
-//
     fun uploadImage(file: File, description: String) = liveData {
         emit(Result.Loading)
         val requestBody = description.toRequestBody("text/plain".toMediaType())
@@ -127,6 +115,50 @@ private constructor(
             val user = runBlocking { userPreference.getSession().first() }
             val apiService = ApiConfig.getApiService(user.token)
             val successResponse = apiService.uploadImage(multipartBody, requestBody)
+            emit(Result.Success(successResponse))
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
+            emit(Result.Error(errorResponse.message.toString()))
+        }
+    }
+
+    fun getStoriesWithLocation() = liveData {
+        emit(Result.Loading)
+        try {
+            val user = runBlocking { userPreference.getSession().first() }
+            val apiService = ApiConfig.getApiService(user.token)
+            val mapsResponse = apiService.getStoryWithLocation()
+            emit(Result.Success(mapsResponse.listStory))
+        } catch (e: HttpException) {
+            val jsonString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            emit(Result.Error(errorMessage!!))
+        }
+    }
+
+    fun uploadImageWithLocation(
+        imageFile: File,
+        description: String,
+        latitude: Double,
+        longitude: Double
+    ) = liveData {
+        emit(Result.Loading)
+        val descriptionRequestBody = description.toRequestBody("text/plain".toMediaType())
+        val latitudeRequestBody = latitude.toString().toRequestBody(MultipartBody.FORM)
+        val longitudeRequestBody = longitude.toString().toRequestBody(MultipartBody.FORM)
+        val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val multipartBody = MultipartBody.Part.createFormData(
+            "photo",
+            imageFile.name,
+            requestImageFile
+        )
+        try {
+            val user = runBlocking { userPreference.getSession().first() }
+            val apiService = ApiConfig.getApiService(user.token)
+            val successResponse =
+                apiService.uploadImageWithLocation(multipartBody, descriptionRequestBody, latitudeRequestBody, longitudeRequestBody)
             emit(Result.Success(successResponse))
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()

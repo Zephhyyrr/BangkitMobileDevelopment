@@ -33,4 +33,15 @@
     <string name="register_image">Register Image</string>
     <string name="priview_upload_image">Priview Upload Image</string>
     <string name="login_untuk_melihat_story">Login untuk melihat Story</string>
+    <string name="maps">Maps</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satellite</string>
+    <string name="terrain_type">Terrain</string>
+    <string name="hybrid_type">Hybrid</string>
+    <string name="location_not_found">Location Not Found</string>
+    <string name="location">"Inputkan Lokasi "</string>
+    <string name="no_media_selected">No Media Selected</string>
+    <string name="permission_granted">Permission Granted</string>
+    <string name="permission_denied">Permission Denied</string>
 </resources>
